@@ -1,0 +1,327 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B1EFDABD16E6E77A00CB436E /* m_pd.h in Headers */ = {isa = PBXBuildFile; fileRef = B1EFDABC16E6E77A00CB436E /* m_pd.h */; };
+		B1EFDABF16E6E7A300CB436E /* glance.c in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDABE16E6E7A300CB436E /* glance.c */; };
+		B1EFDAD316E6ECDC00CB436E /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B1EFDACC16E6ECA900CB436E /* libSDL2.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B1EFDAC916E6ECA900CB436E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BECDF66C0761BA81005FE872;
+			remoteInfo = Framework;
+		};
+		B1EFDACB16E6ECA900CB436E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BECDF6B30761BA81005FE872;
+			remoteInfo = "Static Library";
+		};
+		B1EFDACD16E6ECA900CB436E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BECDF6BE0761BA81005FE872;
+			remoteInfo = "Standard DMG";
+		};
+		B1EFDACF16E6ECA900CB436E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = BECDF6C30761BA81005FE872;
+			remoteInfo = "Developer Extras Package";
+		};
+		B1EFDAD116E6ECA900CB436E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 00D8D9EF1195090700638393;
+			remoteInfo = testsdl;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		B1EFDA4E16E6C63100CB436E /* glance.pd_darwin */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = glance.pd_darwin; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1EFDABC16E6E77A00CB436E /* m_pd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_pd.h; sourceTree = "<group>"; };
+		B1EFDABE16E6E7A300CB436E /* glance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glance.c; sourceTree = "<group>"; };
+		B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = ../../../libs/cpp/SDL/Xcode/SDL/SDL.xcodeproj; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B1EFDA4B16E6C63000CB436E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1EFDAD316E6ECDC00CB436E /* libSDL2.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B1EFDA4516E6C63000CB436E = {
+			isa = PBXGroup;
+			children = (
+				B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */,
+				B1EFDABE16E6E7A300CB436E /* glance.c */,
+				B1EFDA4F16E6C63100CB436E /* Products */,
+				B1EFDABC16E6E77A00CB436E /* m_pd.h */,
+			);
+			sourceTree = "<group>";
+		};
+		B1EFDA4F16E6C63100CB436E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B1EFDA4E16E6C63100CB436E /* glance.pd_darwin */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B1EFDAC116E6ECA700CB436E /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B1EFDACA16E6ECA900CB436E /* SDL2.framework */,
+				B1EFDACC16E6ECA900CB436E /* libSDL2.a */,
+				B1EFDACE16E6ECA900CB436E /* Standard DMG */,
+				B1EFDAD016E6ECA900CB436E /* Developer Extras Package */,
+				B1EFDAD216E6ECA900CB436E /* testsdl.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		B1EFDA4C16E6C63000CB436E /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1EFDABD16E6E77A00CB436E /* m_pd.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		B1EFDA4D16E6C63000CB436E /* glance */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1EFDA5216E6C63100CB436E /* Build configuration list for PBXNativeTarget "glance" */;
+			buildPhases = (
+				B1EFDA4A16E6C63000CB436E /* Sources */,
+				B1EFDA4B16E6C63000CB436E /* Frameworks */,
+				B1EFDA4C16E6C63000CB436E /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = glance;
+			productName = glad;
+			productReference = B1EFDA4E16E6C63100CB436E /* glance.pd_darwin */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B1EFDA4616E6C63000CB436E /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Tiago Rezende";
+			};
+			buildConfigurationList = B1EFDA4916E6C63000CB436E /* Build configuration list for PBXProject "glance" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = B1EFDA4516E6C63000CB436E;
+			productRefGroup = B1EFDA4F16E6C63100CB436E /* Products */;
+			projectDirPath = "";
+			projectReferences = (
+				{
+					ProductGroup = B1EFDAC116E6ECA700CB436E /* Products */;
+					ProjectRef = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
+				},
+			);
+			projectRoot = "";
+			targets = (
+				B1EFDA4D16E6C63000CB436E /* glance */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXReferenceProxy section */
+		B1EFDACA16E6ECA900CB436E /* SDL2.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SDL2.framework;
+			remoteRef = B1EFDAC916E6ECA900CB436E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B1EFDACC16E6ECA900CB436E /* libSDL2.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libSDL2.a;
+			remoteRef = B1EFDACB16E6ECA900CB436E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B1EFDACE16E6ECA900CB436E /* Standard DMG */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "Standard DMG";
+			remoteRef = B1EFDACD16E6ECA900CB436E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B1EFDAD016E6ECA900CB436E /* Developer Extras Package */ = {
+			isa = PBXReferenceProxy;
+			fileType = "compiled.mach-o.executable";
+			path = "Developer Extras Package";
+			remoteRef = B1EFDACF16E6ECA900CB436E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		B1EFDAD216E6ECA900CB436E /* testsdl.app */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.application;
+			path = testsdl.app;
+			remoteRef = B1EFDAD116E6ECA900CB436E /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBXReferenceProxy section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B1EFDA4A16E6C63000CB436E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1EFDABF16E6E7A300CB436E /* glance.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		B1EFDA5016E6C63100CB436E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "~/libs/cpp/SDL/include";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		B1EFDA5116E6C63100CB436E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "~/libs/cpp/SDL/include";
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		B1EFDA5316E6C63100CB436E /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				EXECUTABLE_EXTENSION = pd_darwin;
+				EXECUTABLE_PREFIX = "";
+				INSTALL_PATH = "~/Dropbox/Projects/PD Objects";
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+				);
+				PRODUCT_NAME = glance;
+			};
+			name = Debug;
+		};
+		B1EFDA5416E6C63100CB436E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				EXECUTABLE_EXTENSION = pd_darwin;
+				EXECUTABLE_PREFIX = "";
+				INSTALL_PATH = "~/Dropbox/Projects/PD Objects";
+				OTHER_LDFLAGS = (
+					"-undefined",
+					dynamic_lookup,
+				);
+				PRODUCT_NAME = glance;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B1EFDA4916E6C63000CB436E /* Build configuration list for PBXProject "glance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1EFDA5016E6C63100CB436E /* Debug */,
+				B1EFDA5116E6C63100CB436E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B1EFDA5216E6C63100CB436E /* Build configuration list for PBXNativeTarget "glance" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1EFDA5316E6C63100CB436E /* Debug */,
+				B1EFDA5416E6C63100CB436E /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B1EFDA4616E6C63000CB436E /* Project object */;
+}

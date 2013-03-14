@@ -1,0 +1,30 @@
+dependencies: \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/SDL_cocoaclipboard.m \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_config.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_platform.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/begin_code.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/close_code.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_config_macosx.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/SDL_cocoavideo.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_opengl.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_keycode.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_stdinc.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_scancode.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/../SDL_sysvideo.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_messagebox.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_video.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_pixels.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_rect.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_error.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_rwops.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_surface.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_blendmode.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_shape.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/SDL_cocoaclipboard.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/SDL_cocoaevents.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/SDL_cocoakeyboard.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/SDL_cocoamodes.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/SDL_cocoamouse.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/SDL_cocoaopengl.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/SDL_cocoawindow.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/video/cocoa/../../events/SDL_clipboardevents_c.h

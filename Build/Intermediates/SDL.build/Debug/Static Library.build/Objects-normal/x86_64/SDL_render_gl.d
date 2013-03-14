@@ -1,0 +1,33 @@
+dependencies: \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/render/opengl/SDL_render_gl.c \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_config.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_platform.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/begin_code.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/close_code.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_config_macosx.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_hints.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_stdinc.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_log.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_opengl.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/render/opengl/../SDL_sysrender.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_render.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_rect.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_error.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_pixels.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_rwops.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_video.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_surface.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_blendmode.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_events.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_keyboard.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_keycode.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_scancode.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_mouse.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_joystick.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_gamecontroller.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_quit.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_gesture.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../include/SDL_touch.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/render/opengl/../SDL_yuv_sw_c.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/render/opengl/SDL_shaders_gl.h \
+  /Users/cafe/libs/cpp/SDL/Xcode/SDL/../../src/render/opengl/SDL_glfuncs.h

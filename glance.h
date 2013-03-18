@@ -12,5 +12,11 @@
 #include "pdutils.h"
 
 extern t_symbol *render;
+void gl_win_setup(void);
+void gl_shader_setup(void);
+void gl_vertexarray_setup(void);
+void gl_uniform_setup(void);
+
+
 
 #endif

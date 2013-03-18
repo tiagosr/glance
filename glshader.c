@@ -51,10 +51,13 @@ static void glshader_load(glshader_obj *obj, t_symbol *sym, int argc, t_atom *ar
             txts[c] = txt;
             lens[c] = len;
         }
-        GLuint shader = glCreateShader(sym==vtx?GL_VERTEX_SHADER:
-                                        (sym==frag?GL_FRAGMENT_SHADER:
-                                         (sym==geom)?GL_GEOMETRY_SHADER:
-                                         -1));
+        GLenum t = (sym==vtx?GL_VERTEX_SHADER:
+                    (sym==frag?GL_FRAGMENT_SHADER:
+                     (sym==geom)?GL_GEOMETRY_SHADER:-1));
+        GLuint shader = 0;
+        if(t!=-1) {
+            shader = glCreateShader(t);
+        }
         obj->shader = shader;
         glShaderSource(shader, 1, (const GLchar **)txts, lens);
         glCompileShader(shader);

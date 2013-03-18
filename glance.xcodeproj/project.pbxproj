@@ -18,12 +18,15 @@
 		149A3E5F16E7ECD0008911FD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */; };
 		149A3E6116E7ECE1008911FD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149A3E6016E7ECE1008911FD /* Carbon.framework */; };
 		149A3E6316E7ECF0008911FD /* ForceFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149A3E6216E7ECF0008911FD /* ForceFeedback.framework */; };
+		B124B8A116F4FB8400B15E26 /* glbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A016F4FB8400B15E26 /* glbuffer.c */; };
+		B124B8A316F5158B00B15E26 /* gldraw.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A216F5158B00B15E26 /* gldraw.c */; };
+		B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A416F536E900B15E26 /* glvertexarray.c */; };
+		B124B8A716F536F500B15E26 /* gluniform.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A616F536F500B15E26 /* gluniform.c */; };
 		B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = B15C055416EDC3D900DD7B28 /* pdutils.c */; };
 		B15CE3FB16EA236300DD7B28 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F716EA236300DD7B28 /* utarray.h */; };
 		B15CE3FC16EA236300DD7B28 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F816EA236300DD7B28 /* uthash.h */; };
 		B15CE3FD16EA236300DD7B28 /* utlist.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F916EA236300DD7B28 /* utlist.h */; };
 		B15CE3FE16EA236300DD7B28 /* utstring.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3FA16EA236300DD7B28 /* utstring.h */; };
-		B1EFDADC16E814F900CB436E /* glprogram.c in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDADB16E814F900CB436E /* glprogram.c */; };
 		B1EFDADE16E815B400CB436E /* window.c in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDADD16E815B400CB436E /* window.c */; };
 		B1EFDAE016E83BFC00CB436E /* glshader.c in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDADF16E83BFC00CB436E /* glshader.c */; };
 /* End PBXBuildFile section */
@@ -77,6 +80,10 @@
 		149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = ../../../../../System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<group>"; };
 		149A3E6016E7ECE1008911FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = ../../../../../System/Library/Frameworks/Carbon.framework; sourceTree = "<group>"; };
 		149A3E6216E7ECF0008911FD /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = ../../../../../System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<group>"; };
+		B124B8A016F4FB8400B15E26 /* glbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glbuffer.c; sourceTree = "<group>"; };
+		B124B8A216F5158B00B15E26 /* gldraw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gldraw.c; sourceTree = "<group>"; };
+		B124B8A416F536E900B15E26 /* glvertexarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glvertexarray.c; sourceTree = "<group>"; };
+		B124B8A616F536F500B15E26 /* gluniform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniform.c; sourceTree = "<group>"; };
 		B15C055316EDC35D00DD7B28 /* pdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pdutils.h; sourceTree = "<group>"; };
 		B15C055416EDC3D900DD7B28 /* pdutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pdutils.c; sourceTree = "<group>"; };
 		B15C055616EE8CA000DD7B28 /* glance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glance.h; sourceTree = "<group>"; };
@@ -87,7 +94,6 @@
 		B1EFDABC16E6E77A00CB436E /* m_pd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_pd.h; sourceTree = "<group>"; };
 		B1EFDABE16E6E7A300CB436E /* glance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glance.c; sourceTree = "<group>"; };
 		B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = ../../libs/cpp/SDL/Xcode/SDL/SDL.xcodeproj; sourceTree = "<group>"; };
-		B1EFDADB16E814F900CB436E /* glprogram.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glprogram.c; sourceTree = "<group>"; };
 		B1EFDADD16E815B400CB436E /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = window.c; sourceTree = "<group>"; };
 		B1EFDADF16E83BFC00CB436E /* glshader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glshader.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -143,7 +149,10 @@
 				B15C055316EDC35D00DD7B28 /* pdutils.h */,
 				B15C055416EDC3D900DD7B28 /* pdutils.c */,
 				B1EFDADF16E83BFC00CB436E /* glshader.c */,
-				B1EFDADB16E814F900CB436E /* glprogram.c */,
+				B124B8A016F4FB8400B15E26 /* glbuffer.c */,
+				B124B8A216F5158B00B15E26 /* gldraw.c */,
+				B124B8A416F536E900B15E26 /* glvertexarray.c */,
+				B124B8A616F536F500B15E26 /* gluniform.c */,
 				B1EFDA4F16E6C63100CB436E /* Products */,
 				B15CE3F716EA236300DD7B28 /* utarray.h */,
 				B15CE3F816EA236300DD7B28 /* uthash.h */,
@@ -272,10 +281,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				149A3E4D16E7EA5E008911FD /* glance.c in Sources */,
-				B1EFDADC16E814F900CB436E /* glprogram.c in Sources */,
 				B1EFDADE16E815B400CB436E /* window.c in Sources */,
 				B1EFDAE016E83BFC00CB436E /* glshader.c in Sources */,
 				B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */,
+				B124B8A116F4FB8400B15E26 /* glbuffer.c in Sources */,
+				B124B8A316F5158B00B15E26 /* gldraw.c in Sources */,
+				B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */,
+				B124B8A716F536F500B15E26 /* gluniform.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

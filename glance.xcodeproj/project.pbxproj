@@ -22,6 +22,7 @@
 		B124B8A316F5158B00B15E26 /* gldraw.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A216F5158B00B15E26 /* gldraw.c */; };
 		B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A416F536E900B15E26 /* glvertexarray.c */; };
 		B124B8A716F536F500B15E26 /* gluniform.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A616F536F500B15E26 /* gluniform.c */; };
+		B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18216F6BEE4007BF78F /* glviewport.c */; };
 		B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = B15C055416EDC3D900DD7B28 /* pdutils.c */; };
 		B15CE3FB16EA236300DD7B28 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F716EA236300DD7B28 /* utarray.h */; };
 		B15CE3FC16EA236300DD7B28 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F816EA236300DD7B28 /* uthash.h */; };
@@ -84,6 +85,7 @@
 		B124B8A216F5158B00B15E26 /* gldraw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gldraw.c; sourceTree = "<group>"; };
 		B124B8A416F536E900B15E26 /* glvertexarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glvertexarray.c; sourceTree = "<group>"; };
 		B124B8A616F536F500B15E26 /* gluniform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniform.c; sourceTree = "<group>"; };
+		B12BA18216F6BEE4007BF78F /* glviewport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glviewport.c; sourceTree = "<group>"; };
 		B15C055316EDC35D00DD7B28 /* pdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pdutils.h; sourceTree = "<group>"; };
 		B15C055416EDC3D900DD7B28 /* pdutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pdutils.c; sourceTree = "<group>"; };
 		B15C055616EE8CA000DD7B28 /* glance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glance.h; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				B124B8A216F5158B00B15E26 /* gldraw.c */,
 				B124B8A416F536E900B15E26 /* glvertexarray.c */,
 				B124B8A616F536F500B15E26 /* gluniform.c */,
+				B12BA18216F6BEE4007BF78F /* glviewport.c */,
 				B1EFDA4F16E6C63100CB436E /* Products */,
 				B15CE3F716EA236300DD7B28 /* utarray.h */,
 				B15CE3F816EA236300DD7B28 /* uthash.h */,
@@ -288,6 +291,7 @@
 				B124B8A316F5158B00B15E26 /* gldraw.c in Sources */,
 				B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */,
 				B124B8A716F536F500B15E26 /* gluniform.c in Sources */,
+				B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

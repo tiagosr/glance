@@ -47,6 +47,7 @@ void glance_setup(void) {
     gl_shader_setup();
     gl_vertexarray_setup();
     gl_uniform_setup();
+    gl_viewport_setup();
     post("glance: OpenGL/windowing/input libraries for PD\n"
          "        version %d.%d\n"
          "        (c)2013 Tiago Rezende\n", VERSION_MAJOR, VERSION_MINOR);

@@ -41,6 +41,7 @@ static void *gl_drawarrays_new(t_symbol *smode, t_float first, t_float count) {
     gl_drawarrays_mode(obj, smode);
     obj->first = first;
     obj->count = count;
+    obj->out = outlet_new(&obj->x_obj, &s_anything);
     return (void *)obj;
 }
 static void *gl_drawelements_new(t_symbol *smode, t_float count) {
@@ -50,11 +51,17 @@ static void *gl_drawelements_new(t_symbol *smode, t_float count) {
     obj->count = count;
     obj->indices_count = obj->count;
     obj->indices = malloc(sizeof(GLint)*obj->indices_count);
+    obj->out = outlet_new(&obj->x_obj, &s_anything);
     return (void *)obj;
+}
+
+static void gl_drawarrays_free(t_gl_drawarrays *obj) {
+    outlet_free(obj->out);
 }
 
 static void gl_drawelements_free(t_gl_drawelements *obj) {
     free(obj->indices);
+    outlet_free(obj->out);
 }
 
 static void gl_drawarrays_mode(t_gl_drawarrays *obj, t_symbol *sym) {
@@ -139,7 +146,7 @@ static void gl_drawelements_render(t_gl_drawelements *obj, t_symbol *s, int argc
 void gl_draw_setup(void) {
     gl_drawarrays_class = class_new(gensym("gl.drawarrays"),
                                 (t_newmethod)gl_drawarrays_new,
-                                0,
+                                (t_method)gl_drawelements_free,
                                 sizeof(t_gl_drawarrays), CLASS_DEFAULT,
                                 A_SYMBOL, A_FLOAT, A_FLOAT, 0);
     class_addmethod(gl_drawarrays_class, (t_method)gl_drawarrays_mode, gensym("mode"), A_SYMBOL, 0);

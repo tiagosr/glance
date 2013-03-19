@@ -28,6 +28,7 @@
 		B12BA19116F808CA007BF78F /* libIL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA18E16F808CA007BF78F /* libIL.dylib */; };
 		B12BA19216F808CA007BF78F /* libILU.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA18F16F808CA007BF78F /* libILU.dylib */; };
 		B12BA19316F808CA007BF78F /* libILUT.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA19016F808CA007BF78F /* libILUT.dylib */; };
+		B12BA1AA16F8F515007BF78F /* glclear.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA1A916F8F515007BF78F /* glclear.c */; };
 		B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = B15C055416EDC3D900DD7B28 /* pdutils.c */; };
 		B15CE3FB16EA236300DD7B28 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F716EA236300DD7B28 /* utarray.h */; };
 		B15CE3FC16EA236300DD7B28 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F816EA236300DD7B28 /* uthash.h */; };
@@ -96,6 +97,7 @@
 		B12BA18E16F808CA007BF78F /* libIL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libIL.dylib; path = /usr/local/lib/libIL.dylib; sourceTree = "<absolute>"; };
 		B12BA18F16F808CA007BF78F /* libILU.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libILU.dylib; path = /usr/local/lib/libILU.dylib; sourceTree = "<absolute>"; };
 		B12BA19016F808CA007BF78F /* libILUT.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libILUT.dylib; path = /usr/local/lib/libILUT.dylib; sourceTree = "<absolute>"; };
+		B12BA1A916F8F515007BF78F /* glclear.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glclear.c; sourceTree = "<group>"; };
 		B15C055316EDC35D00DD7B28 /* pdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pdutils.h; sourceTree = "<group>"; };
 		B15C055416EDC3D900DD7B28 /* pdutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pdutils.c; sourceTree = "<group>"; };
 		B15C055616EE8CA000DD7B28 /* glance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glance.h; sourceTree = "<group>"; };
@@ -173,13 +175,14 @@
 				B1EFDADD16E815B400CB436E /* window.c */,
 				B15C055316EDC35D00DD7B28 /* pdutils.h */,
 				B15C055416EDC3D900DD7B28 /* pdutils.c */,
-				B1EFDADF16E83BFC00CB436E /* glshader.c */,
 				B124B8A016F4FB8400B15E26 /* glbuffer.c */,
 				B124B8A216F5158B00B15E26 /* gldraw.c */,
+				B12BA1A916F8F515007BF78F /* glclear.c */,
+				B1EFDADF16E83BFC00CB436E /* glshader.c */,
 				B12BA18C16F7D39C007BF78F /* gltexture.c */,
-				B124B8A416F536E900B15E26 /* glvertexarray.c */,
 				B124B8A616F536F500B15E26 /* gluniform.c */,
 				B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */,
+				B124B8A416F536E900B15E26 /* glvertexarray.c */,
 				B12BA18216F6BEE4007BF78F /* glviewport.c */,
 				B12BA19416F80D9D007BF78F /* Libraries */,
 				B1EFDA4F16E6C63100CB436E /* Products */,
@@ -320,6 +323,7 @@
 				B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */,
 				B12BA18B16F7AF90007BF78F /* gluniformmatrix.c in Sources */,
 				B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */,
+				B12BA1AA16F8F515007BF78F /* glclear.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -13,6 +13,11 @@
 #include <OpenGl/gl3.h>
 #include "glance.h"
 
+/*
+ * Matrix operations translated from the glmatrix javascript library
+ * http://glmatrix.net
+ */
+
 static t_class
     *gl_uniform_mtx2f_class = NULL,
     *gl_uniform_mtx3f_class = NULL,
@@ -373,6 +378,80 @@ static void gl_uniform_mtx4f_rotate_z(t_gl_uniform_mtx4f *obj, t_float angle) {
     obj->value[11] = a13 * c - a03 * s;
 }
 
+static void gl_uniform_mtx4f_frustum(t_gl_uniform_mtx4f *obj,
+                                     t_float left, t_float right,
+                                     t_float bottom, t_float top,
+                                     t_float near, t_float far) {
+    t_float
+        rl = 1.0 / (right - left),
+        tb = 1.0 / (top - bottom),
+        nf = 1.0 / (near - far);
+    obj->value[0]  = (near * 2.0) * rl;
+    obj->value[1]  = 0;
+    obj->value[2]  = 0;
+    obj->value[3]  = 0;
+    obj->value[4]  = 0;
+    obj->value[5]  = (near * 2.0) * tb;
+    obj->value[6]  = 0;
+    obj->value[7]  = 0;
+    obj->value[8]  = (right + left) * rl;
+    obj->value[9]  = (top + bottom) * tb;
+    obj->value[10] = (far + near) * nf;
+    obj->value[11] = -1;
+    obj->value[12] = 0;
+    obj->value[13] = 0;
+    obj->value[14] = (far * near * 2) * nf;
+    obj->value[15] = 0;
+}
+
+static void gl_uniform_mtx4f_perspective(t_gl_uniform_mtx4f *obj,
+                                         t_float fovy, t_float aspect,
+                                         t_float near, t_float far) {
+    
+    t_float f = 1.0/tanf(fovy/2.0), nf = 1.0/(near - far);
+    obj->value[0]  = f / aspect;
+    obj->value[1]  = 0;
+    obj->value[2]  = 0;
+    obj->value[3]  = 0;
+    obj->value[4]  = 0;
+    obj->value[5]  = f;
+    obj->value[6]  = 0;
+    obj->value[7]  = 0;
+    obj->value[8]  = 0;
+    obj->value[9]  = 0;
+    obj->value[10] = (far + near) * nf;
+    obj->value[11] = -1;
+    obj->value[12] = 0;
+    obj->value[13] = 0;
+    obj->value[14] = (far * near * 2) * nf;
+    obj->value[15] = 0;
+}
+
+static void gl_uniform_mtx4f_ortho(t_gl_uniform_mtx4f *obj,
+                                     t_float left, t_float right,
+                                     t_float bottom, t_float top,
+                                     t_float near, t_float far) {
+    t_float
+        lr = 1.0 / (left - right),
+        bt = 1.0 / (bottom - top),
+        nf = 1.0 / (near - far);
+    obj->value[0]  = -2.0 * lr;
+    obj->value[1]  = 0;
+    obj->value[2]  = 0;
+    obj->value[3]  = 0;
+    obj->value[4]  = 0;
+    obj->value[5]  = -2.0 * bt;
+    obj->value[6]  = 0;
+    obj->value[7]  = 0;
+    obj->value[8]  = 0;
+    obj->value[9]  = 0;
+    obj->value[10] = 2.0 * nf;
+    obj->value[11] = 0;
+    obj->value[12] = (left + right) * lr;
+    obj->value[13] = (top + bottom) * bt;
+    obj->value[14] = (far * near) * nf;
+    obj->value[15] = 1;
+}
 
 static void gl_uniform_mtx2f_render(t_gl_uniform_mtx2f *obj,
                                     t_symbol *s, int argc, t_atom *argv) {
@@ -484,6 +563,21 @@ void gl_uniform_matrix_setup(void)
                     gensym("rotate-y"), A_FLOAT, 0);
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_rotate_z,
                     gensym("rotate-z"), A_FLOAT, 0);
+
+    class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_frustum,
+                    gensym("frustum"),
+                    A_FLOAT, A_FLOAT,
+                    A_FLOAT, A_FLOAT,
+                    A_FLOAT, A_FLOAT, 0);
+    class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_perspective,
+                    gensym("perspective"),
+                    A_FLOAT, A_FLOAT,
+                    A_FLOAT, A_FLOAT, 0);
+    class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_ortho,
+                    gensym("ortho"),
+                    A_FLOAT, A_FLOAT,
+                    A_FLOAT, A_FLOAT,
+                    A_FLOAT, A_FLOAT, 0);
 
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_render,
                     render, A_GIMME, 0);

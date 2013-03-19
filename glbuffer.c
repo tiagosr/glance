@@ -30,23 +30,23 @@ static void *gl_buffer_new(t_symbol *starget) {
     t_gl_buffer *buf = NULL;
     bool create = true;
     GLenum target;
-    if (starget == gensym("array")) {
+    if (starget == gensym("ARRAY")) {
         target = GL_ARRAY_BUFFER;
-    } else if (starget == gensym("copy-read")) {
+    } else if (starget == gensym("COPY_READ")) {
         target = GL_COPY_READ_BUFFER;
-    } else if (starget == gensym("copy-write")) {
+    } else if (starget == gensym("COPY_WRITE")) {
         target = GL_COPY_WRITE_BUFFER;
-    } else if (starget == gensym("element-array")) {
+    } else if (starget == gensym("ELEMENT_ARRAY")) {
         target = GL_ELEMENT_ARRAY_BUFFER;
-    } else if (starget == gensym("pixel-pack")) {
+    } else if (starget == gensym("PIXEL_PACK")) {
         target = GL_PIXEL_PACK_BUFFER;
-    } else if (starget == gensym("pixel-unpack")) {
+    } else if (starget == gensym("PIXEL_UNPACK")) {
         target = GL_PIXEL_UNPACK_BUFFER;
-    } else if (starget == gensym("texture")) {
+    } else if (starget == gensym("TEXTURE")) {
         target = GL_TEXTURE_BUFFER;
-    } else if (starget == gensym("transform-feedback")) {
+    } else if (starget == gensym("TRANSFORM_FEEDBACK")) {
         target = GL_TRANSFORM_FEEDBACK_BUFFER;
-    } else if (starget == gensym("uniform")) {
+    } else if (starget == gensym("UNIFORM")) {
         target = GL_UNIFORM_BUFFER;
     } else {
         create = false;

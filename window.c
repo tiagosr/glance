@@ -55,33 +55,38 @@ static void gl_win_send_list_to_outlets(t_gl_win_obj *obj, t_symbol *s, int argc
     }
 }
 
-static void gl_win_thread(glwindow *win) {
-    SDL_Event event;
-    int arg_count;
+static int gl_win_thread(void *vwin, SDL_Event *event) {
+    glwindow *win = (glwindow *)vwin;
+    int arg_count, bytes_count;
     t_atom *arg_list;
     t_symbol *sym;
-    while (SDL_WaitEvent(&event)) {
-        arg_list = NULL;
-        sym = NULL;
-        arg_count = 0;
-        switch (event.type) {
-            case SDL_WINDOWEVENT:
-                
-                break;
-            case SDL_KEYDOWN:
-            case SDL_KEYUP:
-                sym = (event.type==SDL_KEYUP)?gensym("keyup"):gensym("keydown");
-                
-            default:
-                break;
-        }
-        if (sym) {
-            gl_win_send_list_to_outlets(win->win_head, sym, arg_count, arg_list);
-        }
-        if (arg_list) {
-            free(arg_list);
-        }
+    arg_list = NULL;
+    sym = NULL;
+    arg_count = 0;
+    bytes_count = 0;
+    int retval = 1;
+    switch (event->type) {
+        case SDL_WINDOWEVENT:
+            
+            break;
+        case SDL_KEYDOWN:
+        case SDL_KEYUP:
+            sym = (event->type==SDL_KEYUP)?gensym("keyup"):gensym("keydown");
+            arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
+            sym = &s_list;
+            
+            arg_count = 2;
+            retval = 0;
+        default:
+            break;
     }
+    if (sym) {
+        gl_win_send_list_to_outlets(win->win_head, sym, arg_count, arg_list);
+    }
+    if (arg_list) {
+        freebytes(arg_list, bytes_count);
+    }
+    return retval;
 }
 
 static void * gl_win_new(t_symbol *s, int argc, t_atom *argv) {
@@ -111,6 +116,7 @@ static void gl_win_obj_destroy(t_gl_win_obj *obj) {
     if (obj->title) {
         free(obj->title);
     }
+    outlet_free(obj->event_out);
 }
 
 
@@ -148,6 +154,7 @@ static void gl_win_create(t_gl_win_obj *obj) {
                                    obj->width, obj->height,
                                    SDL_WINDOW_OPENGL|
                                    (obj->fullscreen?SDL_WINDOW_FULLSCREEN:0));
+    SDL_SetEventFilter(gl_win_thread, obj);
 }
 
 static void gl_win_fullscreen(t_gl_win_obj *obj, t_float fs) {

@@ -23,6 +23,11 @@
 		B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A416F536E900B15E26 /* glvertexarray.c */; };
 		B124B8A716F536F500B15E26 /* gluniform.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A616F536F500B15E26 /* gluniform.c */; };
 		B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18216F6BEE4007BF78F /* glviewport.c */; };
+		B12BA18B16F7AF90007BF78F /* gluniformmatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */; };
+		B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18C16F7D39C007BF78F /* gltexture.c */; };
+		B12BA19116F808CA007BF78F /* libIL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA18E16F808CA007BF78F /* libIL.dylib */; };
+		B12BA19216F808CA007BF78F /* libILU.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA18F16F808CA007BF78F /* libILU.dylib */; };
+		B12BA19316F808CA007BF78F /* libILUT.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA19016F808CA007BF78F /* libILUT.dylib */; };
 		B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = B15C055416EDC3D900DD7B28 /* pdutils.c */; };
 		B15CE3FB16EA236300DD7B28 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F716EA236300DD7B28 /* utarray.h */; };
 		B15CE3FC16EA236300DD7B28 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F816EA236300DD7B28 /* uthash.h */; };
@@ -72,20 +77,25 @@
 
 /* Begin PBXFileReference section */
 		149A3E4816E7E455008911FD /* glance.pd_darwin */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = glance.pd_darwin; sourceTree = BUILT_PRODUCTS_DIR; };
-		149A3E5216E7EC5F008911FD /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = ../../../../../System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<group>"; };
-		149A3E5416E7EC6E008911FD /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = ../../../../../System/Library/Frameworks/OpenGL.framework; sourceTree = "<group>"; };
-		149A3E5616E7EC7F008911FD /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = ../../../../../System/Library/Frameworks/AudioUnit.framework; sourceTree = "<group>"; };
-		149A3E5816E7EC8B008911FD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = ../../../../../System/Library/Frameworks/Cocoa.framework; sourceTree = "<group>"; };
-		149A3E5A16E7EC9E008911FD /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = ../../../../../System/Library/Frameworks/CoreAudio.framework; sourceTree = "<group>"; };
-		149A3E5C16E7ECAA008911FD /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = ../../../../../System/Library/Frameworks/IOKit.framework; sourceTree = "<group>"; };
-		149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = ../../../../../System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<group>"; };
-		149A3E6016E7ECE1008911FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = ../../../../../System/Library/Frameworks/Carbon.framework; sourceTree = "<group>"; };
-		149A3E6216E7ECF0008911FD /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = ../../../../../System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<group>"; };
+		149A3E5216E7EC5F008911FD /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = /System/Library/Frameworks/AudioToolbox.framework; sourceTree = "<absolute>"; };
+		149A3E5416E7EC6E008911FD /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
+		149A3E5616E7EC7F008911FD /* AudioUnit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioUnit.framework; path = /System/Library/Frameworks/AudioUnit.framework; sourceTree = "<absolute>"; };
+		149A3E5816E7EC8B008911FD /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		149A3E5A16E7EC9E008911FD /* CoreAudio.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreAudio.framework; path = /System/Library/Frameworks/CoreAudio.framework; sourceTree = "<absolute>"; };
+		149A3E5C16E7ECAA008911FD /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
+		149A3E6016E7ECE1008911FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
+		149A3E6216E7ECF0008911FD /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = /System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<absolute>"; };
 		B124B8A016F4FB8400B15E26 /* glbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glbuffer.c; sourceTree = "<group>"; };
 		B124B8A216F5158B00B15E26 /* gldraw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gldraw.c; sourceTree = "<group>"; };
 		B124B8A416F536E900B15E26 /* glvertexarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glvertexarray.c; sourceTree = "<group>"; };
 		B124B8A616F536F500B15E26 /* gluniform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniform.c; sourceTree = "<group>"; };
 		B12BA18216F6BEE4007BF78F /* glviewport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glviewport.c; sourceTree = "<group>"; };
+		B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniformmatrix.c; sourceTree = "<group>"; };
+		B12BA18C16F7D39C007BF78F /* gltexture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gltexture.c; sourceTree = "<group>"; };
+		B12BA18E16F808CA007BF78F /* libIL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libIL.dylib; path = /usr/local/lib/libIL.dylib; sourceTree = "<absolute>"; };
+		B12BA18F16F808CA007BF78F /* libILU.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libILU.dylib; path = /usr/local/lib/libILU.dylib; sourceTree = "<absolute>"; };
+		B12BA19016F808CA007BF78F /* libILUT.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libILUT.dylib; path = /usr/local/lib/libILUT.dylib; sourceTree = "<absolute>"; };
 		B15C055316EDC35D00DD7B28 /* pdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pdutils.h; sourceTree = "<group>"; };
 		B15C055416EDC3D900DD7B28 /* pdutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pdutils.c; sourceTree = "<group>"; };
 		B15C055616EE8CA000DD7B28 /* glance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glance.h; sourceTree = "<group>"; };
@@ -105,6 +115,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B12BA19116F808CA007BF78F /* libIL.dylib in Frameworks */,
+				B12BA19216F808CA007BF78F /* libILU.dylib in Frameworks */,
+				B12BA19316F808CA007BF78F /* libILUT.dylib in Frameworks */,
 				149A3E5316E7EC5F008911FD /* AudioToolbox.framework in Frameworks */,
 				149A3E5716E7EC7F008911FD /* AudioUnit.framework in Frameworks */,
 				149A3E6116E7ECE1008911FD /* Carbon.framework in Frameworks */,
@@ -120,6 +133,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B12BA19416F80D9D007BF78F /* Libraries */ = {
+			isa = PBXGroup;
+			children = (
+				B12BA18E16F808CA007BF78F /* libIL.dylib */,
+				B12BA18F16F808CA007BF78F /* libILU.dylib */,
+				B12BA19016F808CA007BF78F /* libILUT.dylib */,
+				149A3E6216E7ECF0008911FD /* ForceFeedback.framework */,
+				149A3E6016E7ECE1008911FD /* Carbon.framework */,
+				149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */,
+				149A3E5C16E7ECAA008911FD /* IOKit.framework */,
+				149A3E5A16E7EC9E008911FD /* CoreAudio.framework */,
+				149A3E5816E7EC8B008911FD /* Cocoa.framework */,
+				149A3E5616E7EC7F008911FD /* AudioUnit.framework */,
+				149A3E5416E7EC6E008911FD /* OpenGL.framework */,
+				149A3E5216E7EC5F008911FD /* AudioToolbox.framework */,
+			);
+			name = Libraries;
+			sourceTree = "<group>";
+		};
 		B150E49F16F20F6B00AC2DCD /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -135,15 +167,6 @@
 		B1EFDA4516E6C63000CB436E = {
 			isa = PBXGroup;
 			children = (
-				149A3E6216E7ECF0008911FD /* ForceFeedback.framework */,
-				149A3E6016E7ECE1008911FD /* Carbon.framework */,
-				149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */,
-				149A3E5C16E7ECAA008911FD /* IOKit.framework */,
-				149A3E5A16E7EC9E008911FD /* CoreAudio.framework */,
-				149A3E5816E7EC8B008911FD /* Cocoa.framework */,
-				149A3E5616E7EC7F008911FD /* AudioUnit.framework */,
-				149A3E5416E7EC6E008911FD /* OpenGL.framework */,
-				149A3E5216E7EC5F008911FD /* AudioToolbox.framework */,
 				B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */,
 				B1EFDABE16E6E7A300CB436E /* glance.c */,
 				B15C055616EE8CA000DD7B28 /* glance.h */,
@@ -153,9 +176,12 @@
 				B1EFDADF16E83BFC00CB436E /* glshader.c */,
 				B124B8A016F4FB8400B15E26 /* glbuffer.c */,
 				B124B8A216F5158B00B15E26 /* gldraw.c */,
+				B12BA18C16F7D39C007BF78F /* gltexture.c */,
 				B124B8A416F536E900B15E26 /* glvertexarray.c */,
 				B124B8A616F536F500B15E26 /* gluniform.c */,
+				B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */,
 				B12BA18216F6BEE4007BF78F /* glviewport.c */,
+				B12BA19416F80D9D007BF78F /* Libraries */,
 				B1EFDA4F16E6C63100CB436E /* Products */,
 				B15CE3F716EA236300DD7B28 /* utarray.h */,
 				B15CE3F816EA236300DD7B28 /* uthash.h */,
@@ -292,6 +318,8 @@
 				B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */,
 				B124B8A716F536F500B15E26 /* gluniform.c in Sources */,
 				B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */,
+				B12BA18B16F7AF90007BF78F /* gluniformmatrix.c in Sources */,
+				B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,7 +390,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "~/libs/cpp/SDL/include";
+				HEADER_SEARCH_PATHS = (
+					"~/libs/cpp/SDL/include",
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = "";
@@ -388,7 +420,11 @@
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				HEADER_SEARCH_PATHS = "~/libs/cpp/SDL/include";
+				HEADER_SEARCH_PATHS = (
+					"~/libs/cpp/SDL/include",
+					/usr/local/include,
+				);
+				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = "";
 			};

@@ -1,0 +1,160 @@
+//
+//  gltexture.c
+//  glance
+//
+//  Created by Tiago Rezende on 3/18/13.
+//  Copyright (c) 2013 Tiago Rezende. All rights reserved.
+//
+
+#include "m_pd.h"
+#include <stdio.h>
+#include <SDL.h>
+#include <OpenGL/OpenGL.h>
+#include <OpenGl/gl3.h>
+#include "glance.h"
+#include <IL/il.h>
+
+
+static t_class *gl_texture_class;
+
+typedef struct _gl_texture_obj {
+    t_object x_obj;
+    GLuint texture;
+    GLenum texnum;
+    GLenum magfilter, minfilter;
+    ILuint image;
+    bool with_alpha;
+    bool with_border;
+    float bcolor[4];
+    t_outlet *out;
+} t_gl_texture_obj;
+
+
+static void *gl_texture_new(void) {
+    t_gl_texture_obj *obj = (t_gl_texture_obj *)pd_new(gl_texture_class);
+    glGenTextures(1, &obj->texture);
+    obj->image = ilGenImage();
+    obj->texnum = GL_TEXTURE0;
+    obj->with_alpha = true;
+    obj->magfilter = GL_LINEAR;
+    obj->minfilter = GL_LINEAR;
+    obj->with_border = false;
+    obj->bcolor[0] = 0.0;
+    obj->bcolor[1] = 0.0;
+    obj->bcolor[2] = 0.0;
+    obj->bcolor[3] = 0.0;
+    obj->out = outlet_new(&obj->x_obj, &s_anything);
+    return (void *)obj;
+}
+
+static void gl_texture_destroy(t_gl_texture_obj *obj) {
+    glDeleteTextures(1, &obj->texture);
+    ilDeleteImage(obj->image);
+}
+
+static void gl_texture_load_file(t_gl_texture_obj *obj, t_symbol *fname) {
+    GLint activetexture = 0, boundtexture = 0;
+    glGetIntegerv(GL_ACTIVE_TEXTURE, &activetexture);
+    glActiveTexture(obj->texnum);
+    ilBindImage(obj->image);
+    if (ilLoadImage(fname->s_name)) {
+        ilConvertImage(obj->with_alpha?IL_RGBA:IL_RGB, IL_UNSIGNED_BYTE);
+        glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundtexture);
+        glBindTexture(GL_TEXTURE_2D, obj->texture);
+        glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP),
+                     ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT),
+                     obj->with_border?1:0, ilGetInteger(IL_IMAGE_FORMAT),
+                     GL_UNSIGNED_BYTE, ilGetData());
+        glBindTexture(GL_TEXTURE_2D, boundtexture);
+    } else {
+        error("failure loading file %s", fname->s_name);
+    }
+    ilBindImage(0);
+    glActiveTexture(activetexture);
+}
+
+static void gl_texture_texnum(t_gl_texture_obj *obj, t_float num) {
+    obj->texnum = GL_TEXTURE0+num;
+}
+
+static void gl_texture_magfilter(t_gl_texture_obj *obj, t_symbol *sym) {
+    GLint prevbound = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevbound);
+    glBindTexture(GL_TEXTURE_2D, obj->texture);
+    if (sym == gensym("LINEAR")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    } else if (sym == gensym("NEAREST")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
+    glBindTexture(GL_TEXTURE_2D, prevbound);
+}
+
+static void gl_texture_minfilter(t_gl_texture_obj *obj, t_symbol *sym) {
+    GLint prevbound = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevbound);
+    glBindTexture(GL_TEXTURE_2D, obj->texture);
+    if (sym == gensym("LINEAR")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    } else if (sym == gensym("NEAREST")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    } // mipmap ones will only make sense when mipmap is actually implemented
+    glBindTexture(GL_TEXTURE_2D, prevbound);
+}
+
+static void gl_texture_wrap(t_gl_texture_obj *obj,
+                            t_symbol *s, t_symbol *t) {
+    GLint prevbound = 0;
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevbound);
+    glBindTexture(GL_TEXTURE_2D, obj->texture);
+    if (s == gensym("CLAMP_TO_EDGE")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    } else if (s == gensym("CLAMP_TO_BORDER")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    } else if (s == gensym("MIRRORED_REPEAT")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
+    } else if (s == gensym("REPEAT")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    }
+    if (t == gensym("CLAMP_TO_EDGE")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    } else if (t == gensym("CLAMP_TO_BORDER")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+    } else if (t == gensym("MIRRORED_REPEAT")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
+    } else if (t == gensym("REPEAT")) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    }
+    glBindTexture(GL_TEXTURE_2D, prevbound);
+    
+}
+
+
+static void gl_texture_render(t_gl_texture_obj *obj, t_symbol *s, int argc, t_atom *argv) {
+    GLint activetexture = 0, boundtexture = 0;
+    glGetIntegerv(GL_ACTIVE_TEXTURE, &activetexture);
+    glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundtexture);
+    glActiveTexture(obj->texnum);
+    glBindTexture(GL_TEXTURE_2D, obj->texture);
+    outlet_anything(obj->out, s, argc, argv);
+    glBindTexture(GL_TEXTURE_2D, boundtexture);
+    glActiveTexture(activetexture);
+}
+
+void gl_texture_setup(void) {
+    if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION) {
+        error("incorrect OpenIL library version");
+        return; // don't setup image stuff if il is not compatible
+    }
+    ilInit();
+    gl_texture_class = class_new(gensym("gl.texture"),
+                                 (t_newmethod)gl_texture_new,
+                                 (t_method)gl_texture_destroy,
+                                 sizeof(t_gl_texture_obj), CLASS_DEFAULT, 0);
+    class_addmethod(gl_texture_class, (t_method)gl_texture_render,
+                    render, A_GIMME, 0);
+    class_addmethod(gl_texture_class, (t_method)gl_texture_load_file,
+                    gensym("load"), A_SYMBOL, 0);
+    
+}
+
+

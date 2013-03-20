@@ -18,7 +18,8 @@ void gl_vertexarray_setup(void);
 void gl_uniform_setup(void);
 void gl_uniform_matrix_setup(void);
 void gl_viewport_setup(void);
-
+void gl_draw_setup(void);
+void gl_clear_setup(void);
 
 
 #endif

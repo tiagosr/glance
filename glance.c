@@ -14,7 +14,7 @@
 #include "glance.h"
 
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 1
+#define VERSION_MINOR 2
 
 static t_class *glance_class;
 
@@ -47,7 +47,9 @@ void glance_setup(void) {
     gl_shader_setup();
     gl_vertexarray_setup();
     gl_uniform_setup();
+    gl_uniform_matrix_setup();
     gl_viewport_setup();
+    gl_clear_setup();
     post("glance: OpenGL/windowing/input libraries for PD\n"
          "        version %d.%d\n"
          "        (c)2013 Tiago Rezende\n", VERSION_MAJOR, VERSION_MINOR);

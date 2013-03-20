@@ -97,11 +97,11 @@ static void glshader_glance_render(glshader_obj *obj, t_symbol *s, int argc, t_a
     outlet_anything(obj->data_out, s, argc, argv);
 }
 
-void glshader_setup(void) {
-    vtx = gensym("vertex");
-    frag = gensym("fragment");
-    geom = gensym("geometry");
-    glshader_class = class_new(gensym("glshader"),
+void gl_shader_setup(void) {
+    vtx = gensym("VERTEX");
+    frag = gensym("FRAGMENT");
+    geom = gensym("GEOMETRY");
+    glshader_class = class_new(gensym("gl.shader"),
                                (t_newmethod)glshader_new,
                                0,
                                sizeof(glshader_obj),

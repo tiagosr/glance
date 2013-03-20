@@ -25,10 +25,9 @@
 		B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18216F6BEE4007BF78F /* glviewport.c */; };
 		B12BA18B16F7AF90007BF78F /* gluniformmatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */; };
 		B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18C16F7D39C007BF78F /* gltexture.c */; };
-		B12BA19116F808CA007BF78F /* libIL.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA18E16F808CA007BF78F /* libIL.dylib */; };
-		B12BA19216F808CA007BF78F /* libILU.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA18F16F808CA007BF78F /* libILU.dylib */; };
-		B12BA19316F808CA007BF78F /* libILUT.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA19016F808CA007BF78F /* libILUT.dylib */; };
 		B12BA1AA16F8F515007BF78F /* glclear.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA1A916F8F515007BF78F /* glclear.c */; };
+		B12BA1AD16F9375C007BF78F /* libfreeimage-3.15.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */; };
+		B12BA1B416FA41B6007BF78F /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B150E4AA16F20F6B00AC2DCD /* libSDL2.a */; };
 		B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = B15C055416EDC3D900DD7B28 /* pdutils.c */; };
 		B15CE3FB16EA236300DD7B28 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F716EA236300DD7B28 /* utarray.h */; };
 		B15CE3FC16EA236300DD7B28 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F816EA236300DD7B28 /* uthash.h */; };
@@ -94,10 +93,8 @@
 		B12BA18216F6BEE4007BF78F /* glviewport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glviewport.c; sourceTree = "<group>"; };
 		B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniformmatrix.c; sourceTree = "<group>"; };
 		B12BA18C16F7D39C007BF78F /* gltexture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gltexture.c; sourceTree = "<group>"; };
-		B12BA18E16F808CA007BF78F /* libIL.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libIL.dylib; path = /usr/local/lib/libIL.dylib; sourceTree = "<absolute>"; };
-		B12BA18F16F808CA007BF78F /* libILU.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libILU.dylib; path = /usr/local/lib/libILU.dylib; sourceTree = "<absolute>"; };
-		B12BA19016F808CA007BF78F /* libILUT.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libILUT.dylib; path = /usr/local/lib/libILUT.dylib; sourceTree = "<absolute>"; };
 		B12BA1A916F8F515007BF78F /* glclear.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glclear.c; sourceTree = "<group>"; };
+		B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libfreeimage-3.15.4.dylib"; path = "/usr/local/Cellar/freeimage/3.15.4/lib/libfreeimage-3.15.4.dylib"; sourceTree = "<absolute>"; };
 		B15C055316EDC35D00DD7B28 /* pdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pdutils.h; sourceTree = "<group>"; };
 		B15C055416EDC3D900DD7B28 /* pdutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pdutils.c; sourceTree = "<group>"; };
 		B15C055616EE8CA000DD7B28 /* glance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glance.h; sourceTree = "<group>"; };
@@ -117,9 +114,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B12BA19116F808CA007BF78F /* libIL.dylib in Frameworks */,
-				B12BA19216F808CA007BF78F /* libILU.dylib in Frameworks */,
-				B12BA19316F808CA007BF78F /* libILUT.dylib in Frameworks */,
+				B12BA1B416FA41B6007BF78F /* libSDL2.a in Frameworks */,
+				B12BA1AD16F9375C007BF78F /* libfreeimage-3.15.4.dylib in Frameworks */,
 				149A3E5316E7EC5F008911FD /* AudioToolbox.framework in Frameworks */,
 				149A3E5716E7EC7F008911FD /* AudioUnit.framework in Frameworks */,
 				149A3E6116E7ECE1008911FD /* Carbon.framework in Frameworks */,
@@ -138,9 +134,7 @@
 		B12BA19416F80D9D007BF78F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
-				B12BA18E16F808CA007BF78F /* libIL.dylib */,
-				B12BA18F16F808CA007BF78F /* libILU.dylib */,
-				B12BA19016F808CA007BF78F /* libILUT.dylib */,
+				B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */,
 				149A3E6216E7ECF0008911FD /* ForceFeedback.framework */,
 				149A3E6016E7ECE1008911FD /* Carbon.framework */,
 				149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */,
@@ -338,6 +332,10 @@
 				EXECUTABLE_EXTENSION = pd_darwin;
 				EXECUTABLE_PREFIX = "";
 				LD_NO_PIE = YES;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/freeimage/3.15.4/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-undefined",
@@ -357,6 +355,10 @@
 				EXECUTABLE_EXTENSION = pd_darwin;
 				EXECUTABLE_PREFIX = "";
 				LD_NO_PIE = YES;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					/usr/local/Cellar/freeimage/3.15.4/lib,
+				);
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-undefined",
@@ -402,6 +404,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = "";
+				SYMROOT = "$(PROJECT_DIR)/Build/Products";
 			};
 			name = Debug;
 		};
@@ -431,6 +434,7 @@
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				SDKROOT = "";
+				SYMROOT = "$(PROJECT_DIR)/Build/Products";
 			};
 			name = Release;
 		};

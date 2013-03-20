@@ -105,23 +105,25 @@ static void gl_uniform_mtx2f_mtx(t_gl_uniform_mtx2f *obj,
     obj->value[2] = v2; obj->value[3] = v3;
 }
 static void gl_uniform_mtx3f_mtx(t_gl_uniform_mtx3f *obj,
-                                 t_float v0, t_float v1, t_float v2,
-                                 t_float v3, t_float v4, t_float v5,
-                                 t_float v6, t_float v7, t_float v8) {
-    obj->value[0] = v0; obj->value[1] = v1; obj->value[2] = v2;
-    obj->value[3] = v3; obj->value[4] = v4; obj->value[5] = v5;
-    obj->value[6] = v6; obj->value[7] = v7; obj->value[8] = v8;
+                                 t_symbol *sym, int argc, t_atom *argv) {
+    if (argc < 9) {
+        // fail silently?
+    } else {
+        for (int i = 0; i < 9; i++) {
+            obj->value[i] = atom_getfloat(argv+i);
+        }
+    }
 }
 
 static void gl_uniform_mtx4f_mtx(t_gl_uniform_mtx4f *obj,
-                                 t_float v0, t_float v1, t_float v2, t_float v3,
-                                 t_float v4, t_float v5, t_float v6, t_float v7,
-                                 t_float v8, t_float v9, t_float v10, t_float v11,
-                                 t_float v12, t_float v13, t_float v14, t_float v15) {
-    obj->value[0] = v0; obj->value[1] = v1; obj->value[2] = v2; obj->value[3] = v3;
-    obj->value[4] = v4; obj->value[5] = v5; obj->value[6] = v6; obj->value[7] = v7;
-    obj->value[8] = v8; obj->value[9] = v9; obj->value[10] = v10; obj->value[11] = v11;
-    obj->value[12] = v12; obj->value[13] = v13; obj->value[14] = v14; obj->value[15] = v15;
+                                 t_symbol *sym, int argc, t_atom *argv) {
+    if (argc < 16) {
+        // fail silently?
+    } else {
+        for (int i = 0; i < 16; i++) {
+            obj->value[i] = atom_getfloat(argv+i);
+        }
+    }
 }
 
 
@@ -379,10 +381,17 @@ static void gl_uniform_mtx4f_rotate_z(t_gl_uniform_mtx4f *obj, t_float angle) {
 }
 
 static void gl_uniform_mtx4f_frustum(t_gl_uniform_mtx4f *obj,
-                                     t_float left, t_float right,
-                                     t_float bottom, t_float top,
-                                     t_float near, t_float far) {
+                                     t_symbol *sym, int argc, t_atom *argv) {
+    if (argc < 6) {
+        return;
+    }
     t_float
+        left = atom_getfloat(argv+0),
+        right = atom_getfloat(argv+1),
+        bottom = atom_getfloat(argv+2),
+        top = atom_getfloat(argv+3),
+        near = atom_getfloat(argv+4),
+        far = atom_getfloat(argv+5),
         rl = 1.0 / (right - left),
         tb = 1.0 / (top - bottom),
         nf = 1.0 / (near - far);
@@ -428,10 +437,17 @@ static void gl_uniform_mtx4f_perspective(t_gl_uniform_mtx4f *obj,
 }
 
 static void gl_uniform_mtx4f_ortho(t_gl_uniform_mtx4f *obj,
-                                     t_float left, t_float right,
-                                     t_float bottom, t_float top,
-                                     t_float near, t_float far) {
+                                   t_symbol *sym, int argc, t_atom *argv) {
+    if (argc < 6) {
+        return;
+    }
     t_float
+        left = atom_getfloat(argv+0),
+        right = atom_getfloat(argv+1),
+        bottom = atom_getfloat(argv+2),
+        top = atom_getfloat(argv+3),
+        near = atom_getfloat(argv+4),
+        far = atom_getfloat(argv+5),
         lr = 1.0 / (left - right),
         bt = 1.0 / (bottom - top),
         nf = 1.0 / (near - far);
@@ -509,11 +525,7 @@ void gl_uniform_matrix_setup(void)
                                        sizeof(t_gl_uniform_mtx3f), CLASS_DEFAULT,
                                        A_SYMBOL, 0);
     class_addmethod(gl_uniform_mtx3f_class, (t_method)gl_uniform_mtx3f_mtx,
-                    gensym("mtx"),
-                    A_FLOAT, A_FLOAT, A_FLOAT,
-                    A_FLOAT, A_FLOAT, A_FLOAT,
-                    A_FLOAT, A_FLOAT, A_FLOAT,
-                    0);
+                    gensym("mtx"), A_GIMME, 0);
     class_addmethod(gl_uniform_mtx3f_class, (t_method)gl_uniform_mtx3f_setname,
                     gensym("name"), A_SYMBOL, 0);
     class_addmethod(gl_uniform_mtx3f_class, (t_method)gl_uniform_mtx3f_identity,
@@ -527,12 +539,7 @@ void gl_uniform_matrix_setup(void)
                                        sizeof(t_gl_uniform_mtx4f), CLASS_DEFAULT,
                                        A_SYMBOL, 0);
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_mtx,
-                    gensym("mtx"),
-                    A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT,
-                    A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT,
-                    A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT,
-                    A_FLOAT, A_FLOAT, A_FLOAT, A_FLOAT,
-                    0);
+                    gensym("mtx"), A_GIMME, 0);
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_setname,
                     gensym("name"), A_SYMBOL, 0);
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_identity,
@@ -565,20 +572,18 @@ void gl_uniform_matrix_setup(void)
                     gensym("rotate-z"), A_FLOAT, 0);
 
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_frustum,
-                    gensym("frustum"),
-                    A_FLOAT, A_FLOAT,
-                    A_FLOAT, A_FLOAT,
-                    A_FLOAT, A_FLOAT, 0);
+                    gensym("frustum"), A_GIMME, 0);
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_perspective,
                     gensym("perspective"),
                     A_FLOAT, A_FLOAT,
                     A_FLOAT, A_FLOAT, 0);
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_ortho,
-                    gensym("ortho"),
-                    A_FLOAT, A_FLOAT,
-                    A_FLOAT, A_FLOAT,
-                    A_FLOAT, A_FLOAT, 0);
+                    gensym("ortho"), A_GIMME, 0);
 
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_render,
                     render, A_GIMME, 0);
 }
+
+void gl_uniformmatrix2f_setup(void) { gl_uniform_matrix_setup(); }
+void gl_uniformmatrix3f_setup(void) { gl_uniform_matrix_setup(); }
+void gl_uniformmatrix4f_setup(void) { gl_uniform_matrix_setup(); }

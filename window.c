@@ -14,7 +14,7 @@
 #include <OpenGL/OpenGL.h>
 #include <OpenGl/gl3.h>
 
-static t_class *gl_win_class;
+static t_class *gl_win_class, *gl_head_class;
 typedef struct _glwindow {
     t_symbol *name;
     SDL_Window *window;
@@ -89,10 +89,13 @@ static int gl_win_thread(void *vwin, SDL_Event *event) {
     return retval;
 }
 
-static void * gl_win_new(t_symbol *s, int argc, t_atom *argv) {
+static void * gl_win_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {
     t_gl_win_obj *obj = (t_gl_win_obj *)pd_new(gl_win_class);
     obj->window = NULL;
     t_symbol *name = default_window;
+    if (argc < 0) {
+        name = atom_getsymbol(argv); // first argument should be the window name
+    }
     HASH_FIND_PTR(windows, name, obj->window);
     if (!obj->window) {
         obj->window = malloc(sizeof(glwindow));
@@ -100,6 +103,8 @@ static void * gl_win_new(t_symbol *s, int argc, t_atom *argv) {
         HASH_ADD_PTR(windows, name, obj->window);
     }
     obj->window->refcount++;
+    obj->width = 640;
+    obj->height = 480;
     obj->title = NULL;
     obj->event_out = outlet_new(&obj->x_obj, &s_list);
     return (void *) obj;

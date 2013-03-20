@@ -259,8 +259,9 @@ void gl_uniform_setup(void) {
                     gensym("name"), A_SYMBOL, 0);
     class_addmethod(gl_uniform4f_class, (t_method)gl_uniform4f_render,
                     render, A_GIMME, 0);
-
-
-
-
 }
+
+void gl_uniform1f_setup(void) { gl_uniform_setup(); }
+void gl_uniform2f_setup(void) { gl_uniform_setup(); }
+void gl_uniform3f_setup(void) { gl_uniform_setup(); }
+void gl_uniform4f_setup(void) { gl_uniform_setup(); }

@@ -12,7 +12,7 @@
 #include <OpenGL/OpenGL.h>
 #include <OpenGl/gl3.h>
 #include "glance.h"
-#include <IL/il.h>
+#include <FreeImage.h>
 
 
 static t_class *gl_texture_class;
@@ -22,7 +22,6 @@ typedef struct _gl_texture_obj {
     GLuint texture;
     GLenum texnum;
     GLenum magfilter, minfilter;
-    ILuint image;
     bool with_alpha;
     bool with_border;
     float bcolor[4];
@@ -33,7 +32,6 @@ typedef struct _gl_texture_obj {
 static void *gl_texture_new(void) {
     t_gl_texture_obj *obj = (t_gl_texture_obj *)pd_new(gl_texture_class);
     glGenTextures(1, &obj->texture);
-    obj->image = ilGenImage();
     obj->texnum = GL_TEXTURE0;
     obj->with_alpha = true;
     obj->magfilter = GL_LINEAR;
@@ -49,27 +47,29 @@ static void *gl_texture_new(void) {
 
 static void gl_texture_destroy(t_gl_texture_obj *obj) {
     glDeleteTextures(1, &obj->texture);
-    ilDeleteImage(obj->image);
 }
 
 static void gl_texture_load_file(t_gl_texture_obj *obj, t_symbol *fname) {
+    FREE_IMAGE_FORMAT fmt = FreeImage_GetFileType(fname->s_name, 0);
     GLint activetexture = 0, boundtexture = 0;
     glGetIntegerv(GL_ACTIVE_TEXTURE, &activetexture);
     glActiveTexture(obj->texnum);
-    ilBindImage(obj->image);
-    if (ilLoadImage(fname->s_name)) {
-        ilConvertImage(obj->with_alpha?IL_RGBA:IL_RGB, IL_UNSIGNED_BYTE);
+    FIBITMAP * bmp = FreeImage_Load(fmt, fname->s_name, 0);
+    if (bmp) {
+        FIBITMAP *temp = bmp;
+        bmp = FreeImage_ConvertTo32Bits(bmp);
+        FreeImage_Unload(temp);
         glGetIntegerv(GL_TEXTURE_BINDING_2D, &boundtexture);
         glBindTexture(GL_TEXTURE_2D, obj->texture);
-        glTexImage2D(GL_TEXTURE_2D, 0, ilGetInteger(IL_IMAGE_BPP),
-                     ilGetInteger(IL_IMAGE_WIDTH), ilGetInteger(IL_IMAGE_HEIGHT),
-                     obj->with_border?1:0, ilGetInteger(IL_IMAGE_FORMAT),
-                     GL_UNSIGNED_BYTE, ilGetData());
+        glTexImage2D(GL_TEXTURE_2D, 0, 8,
+                     FreeImage_GetWidth(bmp), FreeImage_GetHeight(bmp),
+                     obj->with_border?1:0, GL_BGRA,
+                     GL_UNSIGNED_BYTE, FreeImage_GetBits(bmp));
         glBindTexture(GL_TEXTURE_2D, boundtexture);
+        FreeImage_Unload(bmp);
     } else {
         error("failure loading file %s", fname->s_name);
     }
-    ilBindImage(0);
     glActiveTexture(activetexture);
 }
 
@@ -141,11 +141,6 @@ static void gl_texture_render(t_gl_texture_obj *obj, t_symbol *s, int argc, t_at
 }
 
 void gl_texture_setup(void) {
-    if (ilGetInteger(IL_VERSION_NUM) < IL_VERSION) {
-        error("incorrect OpenIL library version");
-        return; // don't setup image stuff if il is not compatible
-    }
-    ilInit();
     gl_texture_class = class_new(gensym("gl.texture"),
                                  (t_newmethod)gl_texture_new,
                                  (t_method)gl_texture_destroy,

@@ -2,3 +2,5 @@
 glance.xcodeproj/xcuserdata
 glance.xcodeproj/project.xcworkspace/xcuserdata
 Build/
+
+Build/Products/Debug/glance.pd_darwin.dSYM/Contents/Resources/DWARF/glance.pd_darwin

@@ -162,3 +162,6 @@ void gl_draw_setup(void) {
     class_addmethod(gl_drawelements_class, (t_method)gl_drawelements_mode, gensym("mode"), A_SYMBOL, 0);
     class_addmethod(gl_drawelements_class, (t_method)gl_drawelements_count, gensym("count"), A_FLOAT, 0);
 }
+
+void gl_drawarrays_setup(void) { gl_draw_setup(); }
+void gl_drawelements_setup(void) { gl_draw_setup(); }

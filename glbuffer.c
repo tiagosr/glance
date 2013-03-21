@@ -37,7 +37,7 @@ static t_sym_uint_list gl_buffer_target_list[] = {
     {0,0}
 };
 
-static void *gl_buffer_new(t_symbol *starget) {
+static void *gl_buffer_new(t_symbol *starget, t_float components, t_float flength) {
     t_gl_buffer *buf = NULL;
     GLenum target;
     if (find_uint_for_sym(gl_buffer_target_list, starget, &target)) {
@@ -51,6 +51,7 @@ static void *gl_buffer_new(t_symbol *starget) {
 
 static void gl_buffer_free(t_gl_buffer *buf) {
     glDeleteBuffers(1, &buf->buffer_id);
+    outlet_free(buf->out);
 }
 
 static void gl_buffer_use(t_gl_buffer *buf) {
@@ -58,7 +59,8 @@ static void gl_buffer_use(t_gl_buffer *buf) {
 }
 
 static void gl_buffer_render(t_gl_buffer *buf, t_symbol *s, int argc, t_atom *argv) {
-    gl_buffer_use(buf);
+    
+    glBindBuffer(buf->target, buf->buffer_id);
     outlet_anything(buf->out, s, argc, argv);
 }
 
@@ -68,5 +70,7 @@ void gl_buffer_setup(void) {
                                 (t_newmethod)gl_buffer_new,
                                 (t_method)gl_buffer_free,
                                 sizeof(t_gl_buffer), CLASS_DEFAULT,
-                                0);
+                                A_SYMBOL, A_FLOAT, A_FLOAT, 0);
+    class_addmethod(gl_buffer_class, (t_method)gl_buffer_render,
+                    render, A_GIMME, 0);
 }

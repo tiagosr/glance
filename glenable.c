@@ -45,7 +45,6 @@ static t_sym_uint_list gl_switch_modes[] = {
     {"CLIP_DISTANCE6", GL_CLIP_DISTANCE6},
     {"CLIP_DISTANCE7", GL_CLIP_DISTANCE7},
     {"PRIMITIVE_RESTART", GL_PRIMITIVE_RESTART},
-    {"PRIMITIVE_RESTART_INDEX", GL_PRIMITIVE_RESTART_INDEX},
     {"SAMPLE_ALPHA_TO_COVERAGE", GL_SAMPLE_ALPHA_TO_COVERAGE},
     {"SAMPLE_ALPHA_TO_ONE", GL_SAMPLE_ALPHA_TO_ONE},
     {"SAMPLE_COVERAGE", GL_SAMPLE_COVERAGE},
@@ -78,5 +77,20 @@ static void *gl_switch_disable_new(t_symbol *sym) {
     obj->mode = mode;
     obj->out = outlet_new(&obj->x_obj, &s_anything);
     return (void *)obj;
+}
+
+static void gl_switch_render(t_gl_switch_obj *obj, t_symbol *sym, int argc, t_atom *argv) {
+    if (obj->active) {
+        if (obj->enable) {
+            glEnable(obj->mode);
+        } else {
+            glDisable(obj->mode);
+        }
+    }
+    outlet_anything(obj->out, sym, argc, argv);
+}
+
+void gl_switch_setup(void) {
+    
 }
 

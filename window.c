@@ -7,6 +7,7 @@
 //
 
 #include "m_pd.h"
+#include "glance.h"
 #include <stdio.h>
 #include "utstring.h"
 #include "uthash.h"
@@ -14,11 +15,16 @@
 #include <OpenGL/OpenGL.h>
 #include <OpenGl/gl3.h>
 
-static t_class *gl_win_class, *gl_head_class;
+static t_class *gl_window_class;
+static t_class *gl_win_class;
 typedef struct _glwindow {
+    t_object x_obj;
     t_symbol *name;
     SDL_Window *window;
-    SDL_Thread *eventthread;
+    SDL_GLContext *glcontext;
+    t_clock *dispatch_clock;
+    float frame_delta_time;
+    bool keep_rendering;
     struct _gl_renderhead_obj *rh_head;
     struct _gl_win_obj *win_head;
     int refcount;
@@ -74,7 +80,8 @@ static int gl_win_thread(void *vwin, SDL_Event *event) {
             sym = (event->type==SDL_KEYUP)?gensym("keyup"):gensym("keydown");
             arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
             sym = &s_list;
-            
+            SETFLOAT(arg_list, event->key.keysym.sym);
+            SETFLOAT(arg_list+1, (event->type==SDL_KEYDOWN)?1:0);
             arg_count = 2;
             retval = 0;
         default:
@@ -89,6 +96,36 @@ static int gl_win_thread(void *vwin, SDL_Event *event) {
     return retval;
 }
 
+static void gl_win_window_tick(glwindow *win) {
+    t_gl_renderhead_obj *head = win->rh_head;
+    while (head) {
+        outlet_anything(head->render_out, render, 0, 0);
+        head = head->next;
+    }
+    SDL_GL_SwapWindow(win->window);
+    if (win->keep_rendering) {
+        clock_delay(win->dispatch_clock, win->frame_delta_time);
+    }
+}
+
+static glwindow *gl_win_new_window(t_symbol *name) {
+    glwindow *newwin = (glwindow *)pd_new(gl_window_class);
+    memset(newwin, 0, sizeof(glwindow));
+    newwin->dispatch_clock = clock_new(&newwin->x_obj, (t_method)gl_win_window_tick);
+    newwin->frame_delta_time = 1000.0/30.0;
+    HASH_ADD_PTR(windows, name, newwin);
+    return newwin;
+}
+
+static glwindow *gl_find_window(t_symbol *name) {
+    glwindow *window = NULL;
+    HASH_FIND_PTR(windows, name, window);
+    if (!window) {
+        window = gl_win_new_window(name);
+    }
+    return window;
+}
+
 static void * gl_win_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {
     t_gl_win_obj *obj = (t_gl_win_obj *)pd_new(gl_win_class);
     obj->window = NULL;
@@ -96,12 +133,7 @@ static void * gl_win_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {
     if (argc < 0) {
         name = atom_getsymbol(argv); // first argument should be the window name
     }
-    HASH_FIND_PTR(windows, name, obj->window);
-    if (!obj->window) {
-        obj->window = malloc(sizeof(glwindow));
-        memset(obj->window, 0, sizeof(glwindow));
-        HASH_ADD_PTR(windows, name, obj->window);
-    }
+    obj->window = gl_find_window(name);
     obj->window->refcount++;
     obj->width = 640;
     obj->height = 480;
@@ -159,7 +191,8 @@ static void gl_win_create(t_gl_win_obj *obj) {
                                    obj->width, obj->height,
                                    SDL_WINDOW_OPENGL|
                                    (obj->fullscreen?SDL_WINDOW_FULLSCREEN:0));
-    SDL_SetEventFilter(gl_win_thread, obj);
+    obj->window->glcontext = SDL_GL_CreateContext(obj->window->window);
+    SDL_SetEventFilter(gl_win_thread, obj->window->window);
 }
 
 static void gl_win_fullscreen(t_gl_win_obj *obj, t_float fs) {
@@ -170,32 +203,76 @@ static void gl_win_fullscreen(t_gl_win_obj *obj, t_float fs) {
 }
 
 static void gl_win_render(t_gl_win_obj *obj, t_float f) {
-    
+    if ((f != 0) && obj->window->window) {
+        obj->window->keep_rendering = true;
+        gl_win_window_tick(obj->window);
+    } else {
+        obj->window->keep_rendering = false;
+        clock_unset(obj->window->dispatch_clock);
+    }
 }
 
-static void gl_win_destroy(t_gl_win_obj *obj) {
+static void gl_win_window_destroy(glwindow *obj) {
     if (obj->window == NULL) {
         post("no window to destroy");
         return;
     }
-    SDL_DestroyWindow(obj->window->window);
+    SDL_GL_DeleteContext(obj->glcontext);
+    SDL_DestroyWindow(obj->window);
     obj->window = NULL;
+}
+
+static void gl_win_destroy(t_gl_win_obj *obj) {
+    gl_win_window_destroy(obj->window);
 }
 
 
 static t_class *gl_head_class;
 
-static void *gl_head_new(t_symbol *sym) {
+static void *gl_head_new(t_pd *dummy, t_symbol *sym, int argc, t_atom *argv) {
     t_gl_renderhead_obj *obj = (t_gl_renderhead_obj *)pd_new(gl_head_class);
-    
+    t_symbol *name = default_window;
+    if (argc>=1) {
+        name = atom_getsymbol(argv);
+    }
+    obj->window = gl_find_window(name);
+    obj->window->refcount++;
+    obj->next = obj->window->rh_head;
+    obj->window->rh_head = obj;
     obj->render_out = outlet_new(&obj->x_obj, &s_list);
     return (void *)obj;
+}
+
+static void gl_head_destroy(t_gl_renderhead_obj *obj) {
+    // remove this object from the queuw
+    if (obj->window->rh_head == obj) {
+        obj->window->rh_head = obj->window->rh_head->next;
+    } else {
+        t_gl_renderhead_obj *rh_head = obj->window->rh_head;
+        while (rh_head) {
+            if (rh_head->next == obj) {
+                rh_head->next = obj->next;
+            }
+            rh_head = rh_head->next;
+        }
+    }
+    // remove window if no one is using it anymore
+    if (--obj->window->refcount<=0) {
+        gl_win_window_destroy(obj->window);
+        HASH_DEL(windows, obj->window);
+        free(obj->window);
+    }
+    outlet_free(obj->render_out);
 }
 
 
 
 void gl_win_setup(void) {
     default_window = gensym("");
+    gl_window_class = class_new(gensym(" glance_internal_window"),// with a space, to avoid instantiation from within a patch
+                                (t_newmethod)gl_win_new_window,
+                                0, sizeof(glwindow), CLASS_NOINLET,
+                                A_SYMBOL, 0);
     gl_win_class = class_new(gensym("gl.win"),
                                 (t_newmethod)gl_win_new,
                                 (t_method)gl_win_obj_destroy,
@@ -213,5 +290,11 @@ void gl_win_setup(void) {
     class_addmethod(gl_win_class, (t_method)gl_win_fullscreen,
                     gensym("fullscreen"), A_FLOAT, 0);
     class_addfloat(gl_win_class, (t_method)gl_win_render);
+    
+    gl_head_class = class_new(gensym("gl.head"),
+                              (t_newmethod)gl_head_new,
+                              (t_method)gl_head_destroy,
+                              sizeof(t_gl_renderhead_obj),
+                              CLASS_DEFAULT, A_GIMME, 0);
     //class_sethelpsymbol(gl_win_class, gensym("gl_win"));
 }

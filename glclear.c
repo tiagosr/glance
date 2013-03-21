@@ -24,6 +24,12 @@ typedef struct _gl_clear_obj {
     t_outlet *out;
 } t_gl_clear_obj;
 
+static t_sym_uint_list gl_clear_modes[] = {
+    {"COLOR", GL_COLOR},
+    {"DEPTH", GL_DEPTH},
+    {"STENCIL", GL_STENCIL},
+    {0,0}
+};
 static void *gl_clear_new(t_symbol *sym, int argc, t_atom *argv) {
     t_gl_clear_obj *obj = (t_gl_clear_obj *)pd_new(gl_clear_class);
     obj->r = obj->g = obj->b = 0.0;
@@ -33,13 +39,9 @@ static void *gl_clear_new(t_symbol *sym, int argc, t_atom *argv) {
     obj->mask = 0;
     for (int i = 0; i < argc; i++) {
         t_symbol *arg = atom_getsymbolarg(i, argc, argv);
-        if (arg == gensym("COLOR")) {
-            obj->mask |= GL_COLOR;
-        } else if (arg == gensym("DEPTH")) {
-            obj->mask |= GL_DEPTH;
-        } else if (arg == gensym("STENCIL")) {
-            obj->mask |= GL_STENCIL;
-        }
+        GLbitfield mask = 0;
+        find_uint_for_sym(gl_clear_modes, arg, &mask);
+        obj->mask |= mask;
     }
     
     obj->out = outlet_new(&obj->x_obj, &s_anything);
@@ -66,13 +68,7 @@ static void gl_clear_stencil(t_gl_clear_obj *obj, t_float stencilf) {
 
 static void gl_clear_set(t_gl_clear_obj *obj, t_symbol *sym, t_float val) {
     GLbitfield mask = 0;
-    if (sym == gensym("COLOR")) {
-        mask = GL_COLOR;
-    } else if (sym == gensym("DEPTH")) {
-        mask = GL_DEPTH;
-    } else if (sym == gensym("STENCIL")) {
-        mask = GL_STENCIL;
-    }
+    find_uint_for_sym(gl_clear_modes, sym, &mask);
     if (fabs(val) >= 1.0) {
         obj->mask |= mask;
     } else {

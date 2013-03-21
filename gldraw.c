@@ -64,44 +64,22 @@ static void gl_drawelements_free(t_gl_drawelements *obj) {
     outlet_free(obj->out);
 }
 
+static t_sym_uint_list gl_draw_modes[] = {
+    {"POINTS", GL_POINTS},
+    {"LINES", GL_LINES},
+    {"LINE_STRIP", GL_LINE_STRIP},
+    {"TRIANGLES", GL_TRIANGLES},
+    {"TRIANGLE_FAN", GL_TRIANGLE_FAN},
+    {"TRIANGLE_STRIP", GL_TRIANGLE_STRIP},
+    {0,0}
+};
+
 static void gl_drawarrays_mode(t_gl_drawarrays *obj, t_symbol *sym) {
-    if (sym == gensym("POINTS")) {
-        obj->mode = GL_POINTS;
-    } else if (sym == gensym("LINES")) {
-        obj->mode = GL_LINES;
-    } else if (sym == gensym("LINE_STRIP")) {
-        obj->mode = GL_LINE_STRIP;
-    } else if (sym == gensym("LINE_LOOP")) {
-        obj->mode = GL_LINE_LOOP;
-    } else if (sym == gensym("TRIANGLES")) {
-        obj->mode = GL_TRIANGLES;
-    } else if (sym == gensym("TRIANGLE_FAN")) {
-        obj->mode = GL_TRIANGLE_FAN;
-    } else if (sym == gensym("TRIANGLE_STRIP")) {
-        obj->mode = GL_TRIANGLE_STRIP;
-    } else {
-        obj->mode = 0xffffffff; // some invalid mode
-    }
+    find_uint_for_sym(gl_draw_modes, sym, &obj->mode);
 }
 
 static void gl_drawelements_mode(t_gl_drawelements *obj, t_symbol *sym) {
-    if (sym == gensym("POINTS")) {
-        obj->mode = GL_POINTS;
-    } else if (sym == gensym("LINES")) {
-        obj->mode = GL_LINES;
-    } else if (sym == gensym("LINE_STRIP")) {
-        obj->mode = GL_LINE_STRIP;
-    } else if (sym == gensym("LINE_LOOP")) {
-        obj->mode = GL_LINE_LOOP;
-    } else if (sym == gensym("TRIANGLES")) {
-        obj->mode = GL_TRIANGLES;
-    } else if (sym == gensym("TRIANGLE_FAN")) {
-        obj->mode = GL_TRIANGLE_FAN;
-    } else if (sym == gensym("TRIANGLE_STRIP")) {
-        obj->mode = GL_TRIANGLE_STRIP;
-    } else {
-        obj->mode = 0xffffffff; // some invalid mode
-    }
+    find_uint_for_sym(gl_draw_modes, sym, &obj->mode);
 }
 
 

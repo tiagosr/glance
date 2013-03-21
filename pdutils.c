@@ -27,3 +27,24 @@ char *list_to_string(int argc, t_atom *argv) {
     }
     return strdup(str);
 }
+
+int find_uint_for_sym(t_sym_uint_list *start, t_symbol *sym, unsigned *found) {
+    while (start->sym != NULL) {
+        if (gensym(start->sym) == sym) {
+            *found = start->val;
+            return 1;
+        }
+        start++;
+    }
+    return 0;
+}
+int find_int_for_sym(t_sym_uint_list *start, t_symbol *sym, int *found) {
+    while (start->sym != NULL) {
+        if (gensym(start->sym) == sym) {
+            *found = start->val;
+            return 1;
+        }
+        start++;
+    }
+    return 0;
+}

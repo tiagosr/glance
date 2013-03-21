@@ -24,34 +24,23 @@ typedef struct _gl_buffer {
     t_outlet *out;
 } t_gl_buffer;
 
-
+static t_sym_uint_list gl_buffer_target_list[] = {
+    {"ARRAY", GL_ARRAY_BUFFER},
+    {"COPY_READ", GL_COPY_READ_BUFFER},
+    {"COPY_WRITE", GL_COPY_WRITE_BUFFER},
+    {"ELEMENT_ARRAY", GL_ELEMENT_ARRAY_BUFFER},
+    {"PIXEL_PACK", GL_PIXEL_PACK_BUFFER},
+    {"PIXEL_UNPACK", GL_PIXEL_UNPACK_BUFFER},
+    {"TEXTURE", GL_TEXTURE_BUFFER},
+    {"TRANSFORM_FEEDBACK", GL_TRANSFORM_FEEDBACK_BUFFER},
+    {"UNIFORM", GL_UNIFORM_BUFFER},
+    {0,0}
+};
 
 static void *gl_buffer_new(t_symbol *starget) {
     t_gl_buffer *buf = NULL;
-    bool create = true;
     GLenum target;
-    if (starget == gensym("ARRAY")) {
-        target = GL_ARRAY_BUFFER;
-    } else if (starget == gensym("COPY_READ")) {
-        target = GL_COPY_READ_BUFFER;
-    } else if (starget == gensym("COPY_WRITE")) {
-        target = GL_COPY_WRITE_BUFFER;
-    } else if (starget == gensym("ELEMENT_ARRAY")) {
-        target = GL_ELEMENT_ARRAY_BUFFER;
-    } else if (starget == gensym("PIXEL_PACK")) {
-        target = GL_PIXEL_PACK_BUFFER;
-    } else if (starget == gensym("PIXEL_UNPACK")) {
-        target = GL_PIXEL_UNPACK_BUFFER;
-    } else if (starget == gensym("TEXTURE")) {
-        target = GL_TEXTURE_BUFFER;
-    } else if (starget == gensym("TRANSFORM_FEEDBACK")) {
-        target = GL_TRANSFORM_FEEDBACK_BUFFER;
-    } else if (starget == gensym("UNIFORM")) {
-        target = GL_UNIFORM_BUFFER;
-    } else {
-        create = false;
-    }
-    if (create) {
+    if (find_uint_for_sym(gl_buffer_target_list, starget, &target)) {
         buf = (t_gl_buffer *)pd_new(gl_buffer_class);
         glGenBuffers(1, &buf->buffer_id);
         buf->out = outlet_new(&buf->x_obj, &s_anything);

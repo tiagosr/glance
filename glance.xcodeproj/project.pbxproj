@@ -28,6 +28,7 @@
 		B12BA1AA16F8F515007BF78F /* glclear.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA1A916F8F515007BF78F /* glclear.c */; };
 		B12BA1AD16F9375C007BF78F /* libfreeimage-3.15.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */; };
 		B12BA1B416FA41B6007BF78F /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B150E4AA16F20F6B00AC2DCD /* libSDL2.a */; };
+		B12BA1B616FAC2C5007BF78F /* glenable.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA1B516FAC2C4007BF78F /* glenable.c */; };
 		B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = B15C055416EDC3D900DD7B28 /* pdutils.c */; };
 		B15CE3FB16EA236300DD7B28 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F716EA236300DD7B28 /* utarray.h */; };
 		B15CE3FC16EA236300DD7B28 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F816EA236300DD7B28 /* uthash.h */; };
@@ -95,6 +96,7 @@
 		B12BA18C16F7D39C007BF78F /* gltexture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gltexture.c; sourceTree = "<group>"; };
 		B12BA1A916F8F515007BF78F /* glclear.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glclear.c; sourceTree = "<group>"; };
 		B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libfreeimage-3.15.4.dylib"; path = "/usr/local/Cellar/freeimage/3.15.4/lib/libfreeimage-3.15.4.dylib"; sourceTree = "<absolute>"; };
+		B12BA1B516FAC2C4007BF78F /* glenable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glenable.c; sourceTree = "<group>"; };
 		B15C055316EDC35D00DD7B28 /* pdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pdutils.h; sourceTree = "<group>"; };
 		B15C055416EDC3D900DD7B28 /* pdutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pdutils.c; sourceTree = "<group>"; };
 		B15C055616EE8CA000DD7B28 /* glance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glance.h; sourceTree = "<group>"; };
@@ -178,6 +180,7 @@
 				B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */,
 				B124B8A416F536E900B15E26 /* glvertexarray.c */,
 				B12BA18216F6BEE4007BF78F /* glviewport.c */,
+				B12BA1B516FAC2C4007BF78F /* glenable.c */,
 				B12BA19416F80D9D007BF78F /* Libraries */,
 				B1EFDA4F16E6C63100CB436E /* Products */,
 				B15CE3F716EA236300DD7B28 /* utarray.h */,
@@ -318,6 +321,7 @@
 				B12BA18B16F7AF90007BF78F /* gluniformmatrix.c in Sources */,
 				B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */,
 				B12BA1AA16F8F515007BF78F /* glclear.c in Sources */,
+				B12BA1B616FAC2C5007BF78F /* glenable.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

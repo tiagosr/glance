@@ -100,29 +100,24 @@ static void gl_texture_minfilter(t_gl_texture_obj *obj, t_symbol *sym) {
     } // mipmap ones will only make sense when mipmap is actually implemented
     glBindTexture(GL_TEXTURE_2D, prevbound);
 }
-
+static t_sym_uint_list gl_texwrap_modes[] = {
+    {"CLAMP_TO_EDGE", GL_CLAMP_TO_EDGE},
+    {"CLAMP_TO_BORDER", GL_CLAMP_TO_BORDER},
+    {"MIRRORED_REPEAT", GL_MIRRORED_REPEAT},
+    {"REPEAT", GL_REPEAT},
+    {0,0}
+};
 static void gl_texture_wrap(t_gl_texture_obj *obj,
                             t_symbol *s, t_symbol *t) {
     GLint prevbound = 0;
     glGetIntegerv(GL_TEXTURE_BINDING_2D, &prevbound);
     glBindTexture(GL_TEXTURE_2D, obj->texture);
-    if (s == gensym("CLAMP_TO_EDGE")) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    } else if (s == gensym("CLAMP_TO_BORDER")) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    } else if (s == gensym("MIRRORED_REPEAT")) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_MIRRORED_REPEAT);
-    } else if (s == gensym("REPEAT")) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    GLenum texwrapmode = 0;
+    if (find_uint_for_sym(gl_texwrap_modes, s, &texwrapmode)) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texwrapmode);
     }
-    if (t == gensym("CLAMP_TO_EDGE")) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    } else if (t == gensym("CLAMP_TO_BORDER")) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-    } else if (t == gensym("MIRRORED_REPEAT")) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_MIRRORED_REPEAT);
-    } else if (t == gensym("REPEAT")) {
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    if (find_uint_for_sym(gl_texwrap_modes, t, &texwrapmode)) {
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texwrapmode);
     }
     glBindTexture(GL_TEXTURE_2D, prevbound);
     

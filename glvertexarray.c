@@ -56,22 +56,20 @@ static void gl_vertexarray_setnormalized(t_gl_vertexarray_obj *obj, t_float val)
     obj->normalized = (val != 0.0);
 }
 
+static t_sym_uint_list gl_arrayread_modes[] = {
+    {"STATIC_COPY", GL_STATIC_COPY},
+    {"STATIC_DRAW", GL_STATIC_DRAW},
+    {"DYNAMIC_COPY", GL_DYNAMIC_COPY},
+    {"DYNAMIC_DRAW", GL_DYNAMIC_DRAW},
+    {"STREAM_COPY", GL_STREAM_COPY},
+    {"STREAM_DRAW", GL_STREAM_DRAW},
+    {0,0}
+};
+
 static void gl_vertexarray_readarray(t_gl_vertexarray_obj *obj,
                                 t_symbol *arrayname, t_symbol *readmode) {
     GLenum glreadmode = GL_STATIC_COPY;
-    if (readmode == gensym("STATIC_DRAW")) {
-        glreadmode = GL_STATIC_DRAW;
-    } else if (readmode == gensym("DYNAMIC_COPY")) {
-        glreadmode = GL_DYNAMIC_COPY;
-    } else if (readmode == gensym("DYNAMIC_DRAW")) {
-        glreadmode = GL_DYNAMIC_DRAW;
-    } else if (readmode == gensym("STREAM_COPY")) {
-        glreadmode = GL_STREAM_COPY;
-    } else if (readmode == gensym("STREAM_DRAW")) {
-        glreadmode = GL_STREAM_DRAW;
-    } else if (readmode == gensym("STREAM_COPY")) {
-        glreadmode = GL_STREAM_COPY;
-    }
+    find_uint_for_sym(gl_arrayread_modes, readmode, &glreadmode);
     t_garray *ga = (t_garray *)pd_findbyclass(arrayname, garray_class);
     if (obj->pointer) {
         

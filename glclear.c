@@ -25,9 +25,9 @@ typedef struct _gl_clear_obj {
 } t_gl_clear_obj;
 
 static t_sym_uint_list gl_clear_modes[] = {
-    {"COLOR", GL_COLOR},
-    {"DEPTH", GL_DEPTH},
-    {"STENCIL", GL_STENCIL},
+    {"COLOR", GL_COLOR_BUFFER_BIT},
+    {"DEPTH", GL_DEPTH_BUFFER_BIT},
+    {"STENCIL", GL_STENCIL_BUFFER_BIT},
     {0,0}
 };
 static void *gl_clear_new(t_symbol *sym, int argc, t_atom *argv) {
@@ -38,12 +38,11 @@ static void *gl_clear_new(t_symbol *sym, int argc, t_atom *argv) {
     obj->stencil = 0;
     obj->mask = 0;
     for (int i = 0; i < argc; i++) {
-        t_symbol *arg = atom_getsymbolarg(i, argc, argv);
+        t_symbol *arg = atom_getsymbol(argv+i);
         GLbitfield mask = 0;
         find_uint_for_sym(gl_clear_modes, arg, &mask);
         obj->mask |= mask;
     }
-    
     obj->out = outlet_new(&obj->x_obj, &s_anything);
     return (void *)obj;
 }
@@ -78,9 +77,9 @@ static void gl_clear_set(t_gl_clear_obj *obj, t_symbol *sym, t_float val) {
 
 static void gl_clear_render(t_gl_clear_obj *obj,
                             t_symbol *s, int argc, t_atom *argv) {
-    if(obj->mask & GL_COLOR) glClearColor(obj->r, obj->g, obj->b, obj->a);
-    if(obj->mask & GL_DEPTH) glClearDepth(obj->depth);
-    if(obj->mask & GL_STENCIL) glClearStencil(obj->stencil);
+    if(obj->mask & GL_COLOR_BUFFER_BIT) glClearColor(obj->r, obj->g, obj->b, obj->a);
+    if(obj->mask & GL_DEPTH_BUFFER_BIT) glClearDepth(obj->depth);
+    if(obj->mask & GL_STENCIL_BUFFER_BIT) glClearStencil(obj->stencil);
     glClear(obj->mask);
     outlet_anything(obj->out, s, argc, argv);
 }
@@ -91,5 +90,14 @@ void gl_clear_setup(void) {
                                (t_method)gl_clear_destroy,
                                sizeof(t_gl_clear_obj), CLASS_DEFAULT,
                                A_GIMME, 0);
+    class_addmethod(gl_clear_class, (t_method)gl_clear_render, render, A_GIMME, 0);
+    class_addmethod(gl_clear_class, (t_method)gl_clear_color,
+                    gensym("color"), A_FLOAT, A_FLOAT, A_FLOAT, 0);
+    class_addmethod(gl_clear_class, (t_method)gl_clear_depth,
+                    gensym("depth"), A_FLOAT, 0);
+    class_addmethod(gl_clear_class, (t_method)gl_clear_color,
+                    gensym("stencil"), A_FLOAT, 0);
+    class_addmethod(gl_clear_class, (t_method)gl_clear_color,
+                    gensym("set"), A_SYMBOL, A_FLOAT, 0);
     
 }

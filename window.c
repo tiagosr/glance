@@ -23,7 +23,9 @@ typedef struct _glwindow {
     SDL_Window *window;
     SDL_GLContext *glcontext;
     t_clock *dispatch_clock;
+    t_clock *event_clock;
     float frame_delta_time;
+    float event_delta_time;
     bool keep_rendering;
     struct _gl_renderhead_obj *rh_head;
     struct _gl_win_obj *win_head;
@@ -61,47 +63,70 @@ static void gl_win_send_list_to_outlets(t_gl_win_obj *obj, t_symbol *s, int argc
     }
 }
 
-static int gl_win_thread(void *vwin, SDL_Event *event) {
-    glwindow *win = (glwindow *)vwin;
+static void gl_win_event_tick(glwindow *win) {
     int arg_count, bytes_count;
     t_atom *arg_list;
     t_symbol *sym;
-    arg_list = NULL;
-    sym = NULL;
-    arg_count = 0;
-    bytes_count = 0;
-    int retval = 1;
-    switch (event->type) {
-        case SDL_WINDOWEVENT:
-            
-            break;
-        case SDL_KEYDOWN:
-        case SDL_KEYUP:
-            sym = (event->type==SDL_KEYUP)?gensym("keyup"):gensym("keydown");
-            arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
-            sym = &s_list;
-            SETFLOAT(arg_list, event->key.keysym.sym);
-            SETFLOAT(arg_list+1, (event->type==SDL_KEYDOWN)?1:0);
-            arg_count = 2;
-            retval = 0;
-        default:
-            break;
+    SDL_Event event;
+    while (SDL_PollEvent(&event)) {
+        arg_list = NULL;
+        sym = NULL;
+        arg_count = 0;
+        bytes_count = 0;
+        switch (event.type) {
+            case SDL_WINDOWEVENT:
+                
+                break;
+            case SDL_KEYDOWN:
+            case SDL_KEYUP:
+                arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+                sym = &s_list;
+                SETSYMBOL(arg_list, (event.type==SDL_KEYUP)?gensym("keyup"):gensym("keydown"));
+                SETFLOAT(arg_list+1, event.key.keysym.sym);
+                SETFLOAT(arg_list+2, (event.type==SDL_KEYDOWN)?1:0);
+                arg_count = 3;
+            case SDL_MOUSEMOTION:
+                arg_list = getbytes(bytes_count = sizeof(t_atom)*5);
+                sym = &s_list;
+                SETSYMBOL(arg_list, gensym("mousemotion"));
+                SETFLOAT(arg_list+1, event.motion.x);
+                SETFLOAT(arg_list+2, event.motion.y);
+                SETFLOAT(arg_list+3, event.motion.xrel);
+                SETFLOAT(arg_list+4, event.motion.yrel);
+                arg_count = 5;
+            case SDL_MOUSEBUTTONDOWN:
+            case SDL_MOUSEBUTTONUP:
+                arg_list = getbytes(bytes_count = sizeof(t_atom)*4);
+                sym = &s_list;
+                SETSYMBOL(arg_list, (event.type==SDL_MOUSEBUTTONUP)?gensym("mousebuttonup"):gensym("mousebuttondown"));
+                SETFLOAT(arg_list+1, event.button.x);
+                SETFLOAT(arg_list+2, event.button.y);
+                SETFLOAT(arg_list+3, event.button.button);
+                arg_count = 4;
+            default:
+                break;
+        }
+        if (sym) {
+            gl_win_send_list_to_outlets(win->win_head, sym, arg_count, arg_list);
+        }
+        if (arg_list) {
+            freebytes(arg_list, bytes_count);
+        }
     }
-    if (sym) {
-        gl_win_send_list_to_outlets(win->win_head, sym, arg_count, arg_list);
+    if (win->window) {
+        clock_delay(win->event_clock, win->event_delta_time);
     }
-    if (arg_list) {
-        freebytes(arg_list, bytes_count);
-    }
-    return retval;
 }
 
 static void gl_win_window_tick(glwindow *win) {
     t_gl_renderhead_obj *head = win->rh_head;
+    int counter = 0;
     while (head) {
         outlet_anything(head->render_out, render, 0, 0);
         head = head->next;
+        counter++;
     }
+    //post("sent to %d render heads.", counter);
     SDL_GL_SwapWindow(win->window);
     if (win->keep_rendering) {
         clock_delay(win->dispatch_clock, win->frame_delta_time);
@@ -111,15 +136,18 @@ static void gl_win_window_tick(glwindow *win) {
 static glwindow *gl_win_new_window(t_symbol *name) {
     glwindow *newwin = (glwindow *)pd_new(gl_window_class);
     memset(newwin, 0, sizeof(glwindow));
+    newwin->name = name;
     newwin->dispatch_clock = clock_new(&newwin->x_obj, (t_method)gl_win_window_tick);
+    newwin->event_clock = clock_new(&newwin->x_obj, (t_method)gl_win_event_tick);
     newwin->frame_delta_time = 1000.0/30.0;
+    newwin->event_delta_time = 1000.0/120.0;
     HASH_ADD_PTR(windows, name, newwin);
     return newwin;
 }
 
 static glwindow *gl_find_window(t_symbol *name) {
     glwindow *window = NULL;
-    HASH_FIND_PTR(windows, name, window);
+    HASH_FIND_PTR(windows, &name, window);
     if (!window) {
         window = gl_win_new_window(name);
     }
@@ -130,7 +158,7 @@ static void * gl_win_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {
     t_gl_win_obj *obj = (t_gl_win_obj *)pd_new(gl_win_class);
     obj->window = NULL;
     t_symbol *name = default_window;
-    if (argc < 0) {
+    if (argc > 0) {
         name = atom_getsymbol(argv); // first argument should be the window name
     }
     obj->window = gl_find_window(name);
@@ -138,11 +166,25 @@ static void * gl_win_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {
     obj->width = 640;
     obj->height = 480;
     obj->title = NULL;
+    obj->next = obj->window->win_head;
+    obj->window->win_head = obj;
     obj->event_out = outlet_new(&obj->x_obj, &s_list);
     return (void *) obj;
 }
 
 static void gl_win_obj_destroy(t_gl_win_obj *obj) {
+    // remove this object from the queue
+    if (obj->window->win_head == obj) {
+        obj->window->win_head = obj->window->win_head->next;
+    } else {
+        t_gl_win_obj *win_head = obj->window->win_head;
+        while (win_head) {
+            if (win_head->next == obj) {
+                win_head->next = obj->next;
+            }
+            win_head = win_head->next;
+        }
+    }
     if (--obj->window->refcount<=0) {
         if (obj->window->window) {
             gl_win_destroy(obj);
@@ -170,8 +212,10 @@ static void gl_win_title(t_gl_win_obj *obj, t_symbol *s) {
     if (obj->title) {
         free(obj->title);
     }
+    obj->title = malloc(strlen(s->s_name)+1);
+    strcpy(obj->title, s->s_name);
     
-    if (obj->window) {
+    if (obj->window->window) {
         SDL_SetWindowTitle(obj->window->window, obj->title);
     }
 }
@@ -192,7 +236,7 @@ static void gl_win_create(t_gl_win_obj *obj) {
                                    SDL_WINDOW_OPENGL|
                                    (obj->fullscreen?SDL_WINDOW_FULLSCREEN:0));
     obj->window->glcontext = SDL_GL_CreateContext(obj->window->window);
-    SDL_SetEventFilter(gl_win_thread, obj->window->window);
+    gl_win_event_tick(obj->window);
 }
 
 static void gl_win_fullscreen(t_gl_win_obj *obj, t_float fs) {
@@ -244,7 +288,7 @@ static void *gl_head_new(t_pd *dummy, t_symbol *sym, int argc, t_atom *argv) {
 }
 
 static void gl_head_destroy(t_gl_renderhead_obj *obj) {
-    // remove this object from the queuw
+    // remove this object from the queue
     if (obj->window->rh_head == obj) {
         obj->window->rh_head = obj->window->rh_head->next;
     } else {
@@ -268,7 +312,7 @@ static void gl_head_destroy(t_gl_renderhead_obj *obj) {
 
 
 void gl_win_setup(void) {
-    default_window = gensym("");
+    default_window = gensym(" glance default window ");
     gl_window_class = class_new(gensym(" glance_internal_window"),// with a space, to avoid instantiation from within a patch
                                 (t_newmethod)gl_win_new_window,
                                 0, sizeof(glwindow), CLASS_NOINLET,

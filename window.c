@@ -85,6 +85,7 @@ static void gl_win_event_tick(glwindow *win) {
                 SETFLOAT(arg_list+1, event.key.keysym.sym);
                 SETFLOAT(arg_list+2, (event.type==SDL_KEYDOWN)?1:0);
                 arg_count = 3;
+                break;
             case SDL_MOUSEMOTION:
                 arg_list = getbytes(bytes_count = sizeof(t_atom)*5);
                 sym = &s_list;
@@ -94,6 +95,7 @@ static void gl_win_event_tick(glwindow *win) {
                 SETFLOAT(arg_list+3, event.motion.xrel);
                 SETFLOAT(arg_list+4, event.motion.yrel);
                 arg_count = 5;
+                break;
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:
                 arg_list = getbytes(bytes_count = sizeof(t_atom)*4);
@@ -103,6 +105,7 @@ static void gl_win_event_tick(glwindow *win) {
                 SETFLOAT(arg_list+2, event.button.y);
                 SETFLOAT(arg_list+3, event.button.button);
                 arg_count = 4;
+                break;
             default:
                 break;
         }

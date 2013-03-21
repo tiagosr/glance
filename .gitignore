@@ -1,4 +1,4 @@
-Build/*
-Build/Products/Debug/glance.pd_darwin.dSYM/Contents/Resources/DWARF/glance.pd_darwin
+Build/Intermediates/*
+Build/Products/glance.build/*
+Build/Products/Debug/glance.pd_darwin.dSYM/*
 .dropbox
-Build/Products/Debug/glance.pd_darwin.dSYM/Contents/Resources/DWARF/glance.pd_darwin

@@ -3,12 +3,12 @@ glance
 
 Pure Data objects for Modern OpenGL. This set of objects works fundamentally different from GEM, mainly in the input and vertex declaration departments, so beware.
 
-Made for the EXPERIMENTAL.
+Made through the [SuperLab][http://superlab.superuber.com] OpenGL group. HIGHLY EXPERIMENTAL.
 
 objects
--------
+---
 
-* [gl.win <name>]
+* *[gl.win &lt;name&gt;]*
 
   Creates a window, with an optional name. gl.win objects with the same name control the same window, and any unnamed gl.win object controls the default window.
 
@@ -36,13 +36,13 @@ objects
 
   	stops rendering
 
-* [gl.head <name>]
+* *[gl.head &lt;name&gt;]*
   
   Sets up a rendering head, with an optional name matching a [gl.win] object - no name means the default window.
   Any [gl.*] objects connected to it's outlet will be called to render when the corresponding window is rendering.
 
 
-* [gl.enable capability] / [gl.disable capability]
+* *[gl.enable capability]* / *[gl.disable capability]*
   
   Enables or disables a given OpenGL capability. Capabilities are the OpenGL ones:
 
@@ -75,7 +75,7 @@ objects
   - SAMPLE_MASK
 
 
-* [gl.clear bits...]
+* *[gl.clear bits...]*
   
   Clears OpenGL render buffers. You can specify the clearing of more than one buffer at the same time.
 
@@ -95,12 +95,12 @@ objects
 
     sets the value to clear the stencil buffer with
 
-* [gl.viewport x y width height]
+* *[gl.viewport x y width height]*
 
   Sets up a viewport region in the window
 
 
-* [gl.vertexarray usage components length]
+* *[gl.vertexarray usage components length]*
 
   Sets up a vertex attribute array with an amount of groups of floats. 
 
@@ -124,28 +124,28 @@ objects
 
   - STREAM_READ
 
-* [gl.drawarrays] / [gl.drawelements]
+* *[gl.drawarrays]* / *[gl.drawelements]*
 
   Renders a set of elements in the previously attached vertex arrays, either directly (arrays) or indirectly (elements).
 
-* [gl.uniform1/2/3/4f]
+* *[gl.uniform1/2/3/4f]*
   
   Sets up uniform information for shaders
 
-* [gl.uniformmatrix2/3/4f]
+* *[gl.uniformmatrix2/3/4f]*
 
   Sets up uniform matrices for shaders
 
-* [gl.texture]
+* *[gl.texture]*
 
   Sets up and loads textures
 
-* [gl.shader]
+* *[gl.shader]*
   
   Sets up and loads vertex/fragment/geometry shader programs
 
-How to build/run
-----------------
+how to build/run
+---
 
 ### On OS X:
 

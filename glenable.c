@@ -79,6 +79,26 @@ static void *gl_switch_disable_new(t_symbol *sym) {
     return (void *)obj;
 }
 
+static void gl_switch_destroy(t_gl_switch_obj *obj) {
+    outlet_free(obj->out);
+}
+
+static void gl_switch_set(t_gl_switch_obj *obj, t_float active) {
+    if (active == 0) {
+        obj->active = false;
+    } else {
+        obj->active = true;
+    }
+}
+
+static void gl_switch_enable(t_gl_switch_obj *obj, t_float enable) {
+    if (enable == 0) {
+        obj->enable = false;
+    } else {
+        obj->enable = true;
+    }
+}
+
 static void gl_switch_render(t_gl_switch_obj *obj, t_symbol *sym, int argc, t_atom *argv) {
     if (obj->active) {
         if (obj->enable) {
@@ -91,6 +111,16 @@ static void gl_switch_render(t_gl_switch_obj *obj, t_symbol *sym, int argc, t_at
 }
 
 void gl_switch_setup(void) {
-    
+    gl_switch_class = class_new(gensym("gl.enable"),
+                                (t_newmethod)gl_switch_enable_new,
+                                (t_method)gl_switch_destroy,
+                                sizeof(t_gl_switch_obj),
+                                CLASS_DEFAULT, A_SYMBOL, 0);
+    class_addcreator((t_newmethod)gl_switch_disable_new,
+                     gensym("gl.disable"), A_SYMBOL);
+    class_addmethod(gl_switch_class, (t_method)gl_switch_render,
+                    render, A_GIMME, 0);
+    class_addmethod(gl_switch_class, (t_method)gl_switch_enable,
+                    gensym("enable"), A_FLOAT, 0);
 }
 

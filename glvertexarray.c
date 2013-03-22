@@ -76,6 +76,19 @@ static void gl_vertexarray_render(t_gl_vertexarray_obj *obj,
     outlet_anything(obj->out, s, argc, argv);
 }
 
+static void gl_vertexarray_set(t_gl_vertexarray_obj *obj,
+                               t_symbol *sym, int argc, t_atom *argv) {
+    if (argc>1) {
+        float *ptr = glMapBufferRange(GL_ARRAY_BUFFER, (unsigned)atom_getfloat(argv),
+                                      sizeof(float)*(argc-1), GL_MAP_INVALIDATE_RANGE_BIT);
+        int coord = argc-1;
+        for (int i = 0; i<coord; i++) {
+            ptr[i] = atom_getfloat(argv+i);
+        }
+        glUnmapBuffer(GL_ARRAY_BUFFER);
+    }
+}
+
 static void gl_vertexarray_setattribloc(t_gl_vertexarray_obj *obj, t_float loc) {
     obj->attribindex = loc;
 }
@@ -109,6 +122,8 @@ void gl_vertexarray_setup(void) {
     
     class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_render,
                     render, A_GIMME, 0);
+    class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_set,
+                    gensym("set"), A_GIMME, 0);
     class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_readarray,
                     gensym("readarray"), A_SYMBOL, A_SYMBOL, 0);
     class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_setattribloc,

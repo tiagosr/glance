@@ -3,12 +3,14 @@ glance
 
 Pure Data objects for Modern OpenGL. This set of objects works fundamentally different from GEM, mainly in the input and vertex declaration departments, so beware.
 
-Made through the [SuperLab][http://superlab.superuber.com] OpenGL group. HIGHLY EXPERIMENTAL.
+Realized as a project under the [SuperLab](http://superlab.superuber.com) OpenGL group. HIGHLY EXPERIMENTAL.
+
+
 
 objects
 ---
 
-* *[gl.win &lt;name&gt;]*
+* **[gl.win &lt;name&gt;]**
 
   Creates a window, with an optional name. gl.win objects with the same name control the same window, and any unnamed gl.win object controls the default window.
 
@@ -17,32 +19,32 @@ objects
   Messages:
 
   - [title string with spaces and stuff [
-
+    
     sets a title for this window
 
   - [create[
-
+    
     creates the window (does not render anything until sent a float)
-
+    
   - [destroy[
-
+    
     destroys the window, if created
-
+    
   - [1[
-
+    
   	starts rendering (i.e. sends render messages to the gl.head objects with the same name)
 
   - [0[
-
+    
   	stops rendering
 
-* *[gl.head &lt;name&gt;]*
+* **[gl.head &lt;name&gt;]**
   
   Sets up a rendering head, with an optional name matching a [gl.win] object - no name means the default window.
   Any [gl.*] objects connected to it's outlet will be called to render when the corresponding window is rendering.
 
 
-* *[gl.enable capability]* / *[gl.disable capability]*
+* **[gl.enable capability]** / **[gl.disable capability]**
   
   Enables or disables a given OpenGL capability. Capabilities are the OpenGL ones:
 
@@ -75,7 +77,7 @@ objects
   - SAMPLE_MASK
 
 
-* *[gl.clear bits...]*
+* **[gl.clear bits...]**
   
   Clears OpenGL render buffers. You can specify the clearing of more than one buffer at the same time.
 
@@ -88,19 +90,19 @@ objects
     sets the color value to clear the color buffer with
 
   - [depth d[
-
+    
     sets the fragment depth to clear the fragment buffer with
 
   - [stencil v[
-
+    
     sets the value to clear the stencil buffer with
 
-* *[gl.viewport x y width height]*
+* **[gl.viewport x y width height]**
 
   Sets up a viewport region in the window
 
 
-* *[gl.vertexarray usage components length]*
+* **[gl.vertexarray usage components length]**
 
   Sets up a vertex attribute array with an amount of groups of floats. 
 
@@ -124,27 +126,29 @@ objects
 
   - STREAM_READ
 
-* *[gl.drawarrays]* / *[gl.drawelements]*
+* **[gl.drawarrays]** / **[gl.drawelements]**
 
   Renders a set of elements in the previously attached vertex arrays, either directly (arrays) or indirectly (elements).
 
-* *[gl.uniform1/2/3/4f]*
+* **[gl.uniform1/2/3/4f]**
   
   Sets up uniform information for shaders
 
-* *[gl.uniformmatrix2/3/4f]*
+* **[gl.uniformmatrix2/3/4f]**
 
   Sets up uniform matrices for shaders
 
-* *[gl.texture]*
+* **[gl.texture]**
 
   Sets up and loads textures
 
-* *[gl.shader]*
+* **[gl.shader]**
   
   Sets up and loads vertex/fragment/geometry shader programs
 
-how to build/run
+
+
+How to build/run
 ---
 
 ### On OS X:
@@ -160,8 +164,9 @@ Install glance.pd_darwin into Pd
 Enjoy
 
 
-TODO:
------
+
+TODO
+---
 
 Port to Windows/Linux (add GLEW or something, should help with newer than 3.2 stuff on OS X too)
 

@@ -97,7 +97,15 @@ static void gl_vertexarray_setnormalized(t_gl_vertexarray_obj *obj, t_float val)
     obj->normalized = (val != 0.0);
 }
 
-
+static void gl_vertexarray_readptr(t_gl_vertexarray_obj *obj,
+                                   t_float offsetinto, t_float length,
+                                   float *fptr) {
+    GLint prevboundbuffer = 0;
+    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, (int)offsetinto, ((unsigned)length)*sizeof(float), fptr);
+    glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
+}
 
 static void gl_vertexarray_readarray(t_gl_vertexarray_obj *obj,
                                 t_symbol *arrayname, t_float offsetinto) {
@@ -126,8 +134,11 @@ void gl_vertexarray_setup(void) {
                     gensym("set"), A_GIMME, 0);
     class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_readarray,
                     gensym("readarray"), A_SYMBOL, A_SYMBOL, 0);
+    class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_readptr,
+                    gensym("readptr"), A_FLOAT, A_FLOAT, A_POINTER, 0);
     class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_setattribloc,
                     gensym("attribloc"), A_FLOAT, 0);
     class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_setnormalized,
                     gensym("normalized"), A_FLOAT, 0);
+    
 }

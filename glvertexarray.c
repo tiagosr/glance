@@ -17,15 +17,18 @@ static t_class *gl_vertexarray_class;
 
 typedef struct _gl_vertexarray_obj {
     t_object x_obj;
+    GLuint vertexarray;
     GLuint arraybuffer;
     GLuint attribindex;
     GLint size;
     GLenum type;
     GLboolean normalized;
     GLsizei stride;
+    GLenum glreadmode;
     int vtx_comps, vtx_offset;
     int col_comps, col_offset;
     int nml_comps, nml_offset;
+    bool init;
     float * pointer;
     t_outlet *out;
 } t_gl_vertexarray_obj;
@@ -46,58 +49,84 @@ static t_sym_uint_list gl_arrayread_modes[] = {
 static void *gl_vertexarray_new(t_symbol *readmode, t_float components, t_float flength) {
     t_gl_vertexarray_obj *obj = NULL;
     obj = (t_gl_vertexarray_obj *)pd_new(gl_vertexarray_class);
-    glGenBuffers(1, &obj->arraybuffer);
-    GLenum glreadmode = GL_STATIC_COPY;
-    find_uint_for_sym(gl_arrayread_modes, readmode, &glreadmode);
+    obj->glreadmode = GL_STATIC_COPY;
+    find_uint_for_sym(gl_arrayread_modes, readmode, &obj->glreadmode);
+    obj->init = false;
     obj->attribindex = 0;
     obj->normalized = false;
     obj->size = sizeof(float)*(unsigned)components*(unsigned)flength;
-    obj->stride = components;
+    obj->stride = components*sizeof(float);
     obj->pointer = NULL;
     //obj->pointer = getbytes(obj->size);
-    int prevboundbuffer = 0;
-    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
-    glBufferData(GL_ARRAY_BUFFER, obj->size, NULL, glreadmode);
-    glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
     obj->out = outlet_new(&obj->x_obj, &s_anything);
     return (void *)obj;
 }
 
+static void gl_vertexarray_init(t_gl_vertexarray_obj *obj) {
+    glGenVertexArrays(1, &obj->vertexarray);
+    glGenBuffers(1, &obj->arraybuffer);
+    int prevboundbuffer = 0, prevboundvtxarray = 0;
+    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevboundvtxarray);
+    glBindVertexArray(obj->vertexarray);
+    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
+    glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
+    glBufferData(GL_ARRAY_BUFFER, obj->size, NULL, obj->glreadmode);
+    glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
+    glBindVertexArray(prevboundvtxarray);
+    obj->init = true;
+}
+
 static void gl_vertexarray_destroy(t_gl_vertexarray_obj *obj) {
-    glDeleteBuffers(1, &obj->arraybuffer);
+    if (obj->init) {
+        glDeleteBuffers(1, &obj->arraybuffer);
+        glDeleteVertexArrays(1, &obj->vertexarray);
+    }
     outlet_free(obj->out);
     //freebytes(obj->pointer, obj->size);
 }
 
 static void gl_vertexarray_render(t_gl_vertexarray_obj *obj,
                                   t_symbol *s, int argc, t_atom *argv) {
-    GLint prevboundbuffer = 0;
+    if (!obj->init) {
+        gl_vertexarray_init(obj);
+    }
+    GLint prevboundbuffer = 0, prevboundvtxarray = 0;
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
+    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevboundvtxarray);
+    glBindVertexArray(obj->vertexarray);
     glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
-    glBindVertexArray(obj->arraybuffer);
     glEnableVertexAttribArray(obj->attribindex);
     glVertexAttribPointer(GL_ARRAY_BUFFER,
                           obj->size, obj->type, obj->normalized,
                           obj->stride, 0);
     outlet_anything(obj->out, s, argc, argv);
     glDisableVertexAttribArray(obj->attribindex);
+    glBindVertexArray(prevboundvtxarray);
     glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
 }
 
 static void gl_vertexarray_set(t_gl_vertexarray_obj *obj,
                                t_symbol *sym, int argc, t_atom *argv) {
     if (argc >= 2) {
+        if (!obj->init) {
+            gl_vertexarray_init(obj);
+        }
         int offset = atom_getfloat(argv);
         size_t len = argc - 1;
-        GLint prevboundbuffer = 0;
+        GLint prevboundbuffer = 0, prevboundvtxarray = 0;
+        glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevboundvtxarray);
+        glBindVertexArray(obj->vertexarray);
         glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
         glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
         float *ptr = glMapBufferRange(GL_ARRAY_BUFFER, offset*sizeof(float),
                                       len*sizeof(float),
                                       GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT);
         if (ptr == NULL) {
-            error("couldn't map buffer - null pointer received");
+            GLenum errv = glGetError();
+            char * errstr = (errv==GL_INVALID_VALUE)?"GL_INVALID_VALUE":
+                            ((errv==GL_INVALID_OPERATION)?"GL_INVALID_OPERATION":
+                             ((errv==GL_OUT_OF_MEMORY?"GL_OUT_OF_MEMORY":"(unknown)")));
+            error("couldn't map buffer (%s) - null pointer received", errstr);
             return;
         }
         for (int i = 0; i<len; i++) {
@@ -105,6 +134,7 @@ static void gl_vertexarray_set(t_gl_vertexarray_obj *obj,
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
         glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
+        glBindVertexArray(prevboundvtxarray);
     }
 }
 
@@ -119,15 +149,23 @@ static void gl_vertexarray_setnormalized(t_gl_vertexarray_obj *obj, t_float val)
 static void gl_vertexarray_readptr(t_gl_vertexarray_obj *obj,
                                    t_float offsetinto, t_float length,
                                    float *fptr) {
+    if (!obj->init) {
+        gl_vertexarray_init(obj);
+    }
     GLint prevboundbuffer = 0;
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
-    glBufferSubData(GL_ARRAY_BUFFER, (int)offsetinto, ((unsigned)length)*sizeof(float), fptr);
+    glBufferSubData(GL_ARRAY_BUFFER,
+                    (int)offsetinto*sizeof(float),
+                    ((unsigned)length)*sizeof(float), fptr);
     glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
 }
 
 static void gl_vertexarray_readarray(t_gl_vertexarray_obj *obj,
                                 t_symbol *arrayname, t_float offsetinto) {
+    if (!obj->init) {
+        gl_vertexarray_init(obj);
+    }
     t_garray *ga = (t_garray *)pd_findbyclass(arrayname, garray_class);
     int dsize;
     t_float *pointer;

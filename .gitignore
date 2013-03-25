@@ -1,5 +1,18 @@
-Build/Intermediates
+Build/Intermediates/*
 Build/Products/glance.build/*
 Build/Products/Debug/glance.pd_darwin.dSYM/*
 .dropbox
 
+
+Build/Intermediates/*
+*.xcuserstate
+
+Build/Products/.DS_Store
+
+Build/Products/Debug/libSDL2.a
+
+Build/Products/Debug/libSDL2.a
+
+glance.xcodeproj/project.xcworkspace/xcuserdata/cafe.xcuserdatad/UserInterfaceState.xcuserstate
+
+*.xcuserstate

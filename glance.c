@@ -51,6 +51,7 @@ void glance_setup(void) {
     gl_win_setup();
     gl_shader_setup();
     gl_vertexarray_setup();
+    gl_draw_setup();
     gl_uniform_setup();
     gl_uniform_matrix_setup();
     gl_viewport_setup();

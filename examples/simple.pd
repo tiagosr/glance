@@ -1,0 +1,21 @@
+#N canvas 411 559 450 300 10;
+#X obj 225 169 gl.vertexarray STATIC_DRAW 3 4;
+#X obj 51 126 gl.win;
+#X obj 225 108 gl.clear DEPTH COLOR;
+#X obj 225 87 gl.head;
+#X obj 59 42 tgl 15 0 empty empty empty 17 7 0 10 -262144 -1 -1 0 1
+;
+#X msg 21 100 create \, 1;
+#X msg 85 99 0 \, destroy;
+#X obj 58 74 sel 1 0;
+#X obj 225 202 gl.drawarrays TRIANGLE_STRIP 0 4;
+#X msg 358 51 set 0 -0.5 -0.5 0 -0.5 0.5 0 0.5 -0.5 0 0.5 0.5 0;
+#X connect 0 0 8 0;
+#X connect 2 0 0 0;
+#X connect 3 0 2 0;
+#X connect 4 0 7 0;
+#X connect 5 0 1 0;
+#X connect 6 0 1 0;
+#X connect 7 0 5 0;
+#X connect 7 1 6 0;
+#X connect 9 0 0 0;

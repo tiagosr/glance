@@ -183,7 +183,7 @@ void gl_vertexarray_setup(void) {
                                      (t_newmethod)gl_vertexarray_new, 0,
                                      sizeof(t_gl_vertexarray_obj),
                                      CLASS_DEFAULT,
-                                     A_SYMBOL, A_FLOAT, 0);
+                                     A_SYMBOL, A_FLOAT, A_FLOAT, 0);
     
     class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_render,
                     render, A_GIMME, 0);

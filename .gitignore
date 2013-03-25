@@ -1,4 +1,5 @@
-Build/Intermediates/*
+Build/Intermediates
 Build/Products/glance.build/*
 Build/Products/Debug/glance.pd_darwin.dSYM/*
 .dropbox
+

@@ -23,6 +23,9 @@ typedef struct _gl_vertexarray_obj {
     GLenum type;
     GLboolean normalized;
     GLsizei stride;
+    int vtx_comps, vtx_offset;
+    int col_comps, col_offset;
+    int nml_comps, nml_offset;
     float * pointer;
     t_outlet *out;
 } t_gl_vertexarray_obj;
@@ -50,11 +53,12 @@ static void *gl_vertexarray_new(t_symbol *readmode, t_float components, t_float 
     obj->normalized = false;
     obj->size = sizeof(float)*(unsigned)components*(unsigned)flength;
     obj->stride = components;
-    obj->pointer = getbytes(obj->size);
+    obj->pointer = NULL;
+    //obj->pointer = getbytes(obj->size);
     int prevboundbuffer = 0;
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
-    glBufferData(GL_ARRAY_BUFFER, obj->size, obj->pointer, glreadmode);
+    glBufferData(GL_ARRAY_BUFFER, obj->size, NULL, glreadmode);
     glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
     obj->out = outlet_new(&obj->x_obj, &s_anything);
     return (void *)obj;
@@ -63,29 +67,44 @@ static void *gl_vertexarray_new(t_symbol *readmode, t_float components, t_float 
 static void gl_vertexarray_destroy(t_gl_vertexarray_obj *obj) {
     glDeleteBuffers(1, &obj->arraybuffer);
     outlet_free(obj->out);
-    freebytes(obj->pointer, obj->size);
+    //freebytes(obj->pointer, obj->size);
 }
 
 static void gl_vertexarray_render(t_gl_vertexarray_obj *obj,
                                   t_symbol *s, int argc, t_atom *argv) {
+    GLint prevboundbuffer = 0;
+    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
+    glBindVertexArray(obj->arraybuffer);
     glEnableVertexAttribArray(obj->attribindex);
     glVertexAttribPointer(GL_ARRAY_BUFFER,
                           obj->size, obj->type, obj->normalized,
-                          obj->stride, obj->pointer);
+                          obj->stride, 0);
     outlet_anything(obj->out, s, argc, argv);
+    glDisableVertexAttribArray(obj->attribindex);
+    glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
 }
 
 static void gl_vertexarray_set(t_gl_vertexarray_obj *obj,
                                t_symbol *sym, int argc, t_atom *argv) {
-    if (argc>1) {
-        float *ptr = glMapBufferRange(GL_ARRAY_BUFFER, (unsigned)atom_getfloat(argv),
-                                      sizeof(float)*(argc-1), GL_MAP_INVALIDATE_RANGE_BIT);
-        int coord = argc-1;
-        for (int i = 0; i<coord; i++) {
-            ptr[i] = atom_getfloat(argv+i);
+    if (argc >= 2) {
+        int offset = atom_getfloat(argv);
+        size_t len = argc - 1;
+        GLint prevboundbuffer = 0;
+        glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
+        glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
+        float *ptr = glMapBufferRange(GL_ARRAY_BUFFER, offset*sizeof(float),
+                                      len*sizeof(float),
+                                      GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT);
+        if (ptr == NULL) {
+            error("couldn't map buffer - null pointer received");
+            return;
+        }
+        for (int i = 0; i<len; i++) {
+            ptr[i] = atom_getfloat(argv+i+1);
         }
         glUnmapBuffer(GL_ARRAY_BUFFER);
+        glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
     }
 }
 

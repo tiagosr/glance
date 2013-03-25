@@ -43,6 +43,11 @@ void glance_setup(void) {
                            CLASS_DEFAULT,
                            0);
     class_addbang(glance_class, glance_bang);
+    SDL_Init(SDL_INIT_EVERYTHING);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     gl_win_setup();
     gl_shader_setup();
     gl_vertexarray_setup();

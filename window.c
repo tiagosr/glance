@@ -74,8 +74,68 @@ static void gl_win_event_tick(glwindow *win) {
         arg_count = 0;
         bytes_count = 0;
         switch (event.type) {
+            case SDL_QUIT:
+                arg_list = getbytes(bytes_count = sizeof(t_atom));
+                sym = &s_list;
+                SETSYMBOL(arg_list, gensym("quit"));
+                arg_count = 1;
+                break;
             case SDL_WINDOWEVENT:
-                
+            {
+                char *windowev = "none";
+                switch (event.window.event) {
+                    case SDL_WINDOWEVENT_SHOWN:
+                        windowev = "shown";
+                        break;
+                    case SDL_WINDOWEVENT_CLOSE:
+                        windowev = "close";
+                        break;
+                    case SDL_WINDOWEVENT_ENTER:
+                        windowev = "enter";
+                        break;
+                    case SDL_WINDOWEVENT_EXPOSED:
+                        windowev = "exposed";
+                        break;
+                    case SDL_WINDOWEVENT_FOCUS_GAINED:
+                        windowev = "focus_gained";
+                        break;
+                    case SDL_WINDOWEVENT_FOCUS_LOST:
+                        windowev = "focus_lost";
+                        break;
+                    case SDL_WINDOWEVENT_HIDDEN:
+                        windowev = "hidden";
+                        break;
+                    case SDL_WINDOWEVENT_LEAVE:
+                        windowev = "leave";
+                        break;
+                    case SDL_WINDOWEVENT_MAXIMIZED:
+                        windowev = "maximized";
+                        break;
+                    case SDL_WINDOWEVENT_MINIMIZED:
+                        windowev = "minimized";
+                        break;
+                    case SDL_WINDOWEVENT_MOVED:
+                        windowev = "moved";
+                        break;
+                    case SDL_WINDOWEVENT_RESIZED:
+                        windowev = "resized";
+                        break;
+                    case SDL_WINDOWEVENT_RESTORED:
+                        windowev = "restored";
+                        break;
+                    case SDL_WINDOWEVENT_SIZE_CHANGED:
+                        windowev = "size_changed";
+                        break;
+                    default:
+                        break;
+                }
+                arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+                sym = &s_list;
+                SETSYMBOL(arg_list, gensym(windowev));
+                SETFLOAT(arg_list+1, event.window.data1);
+                SETFLOAT(arg_list+2, event.window.data2);
+                arg_count = 3;
+            }
                 break;
             case SDL_KEYDOWN:
             case SDL_KEYUP:
@@ -105,6 +165,14 @@ static void gl_win_event_tick(glwindow *win) {
                 SETFLOAT(arg_list+2, event.button.y);
                 SETFLOAT(arg_list+3, event.button.button);
                 arg_count = 4;
+                break;
+            case SDL_MOUSEWHEEL:
+                arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+                sym = &s_list;
+                SETSYMBOL(arg_list, gensym("mousewheel"));
+                SETFLOAT(arg_list+1, event.wheel.x);
+                SETFLOAT(arg_list+2, event.wheel.y);
+                arg_count = 3;
                 break;
             default:
                 break;
@@ -239,6 +307,10 @@ static void gl_win_create(t_gl_win_obj *obj) {
                                    SDL_WINDOW_OPENGL|
                                    (obj->fullscreen?SDL_WINDOW_FULLSCREEN:0));
     obj->window->glcontext = SDL_GL_CreateContext(obj->window->window);
+    int gl_major = 0, gl_minor = 0;
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_major);
+    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &gl_minor);
+    post("gl context version: %d.%d",gl_major, gl_minor);
     gl_win_event_tick(obj->window);
 }
 

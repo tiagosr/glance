@@ -18,7 +18,6 @@
 		149A3E5F16E7ECD0008911FD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */; };
 		149A3E6116E7ECE1008911FD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149A3E6016E7ECE1008911FD /* Carbon.framework */; };
 		149A3E6316E7ECF0008911FD /* ForceFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149A3E6216E7ECF0008911FD /* ForceFeedback.framework */; };
-		B124B8A116F4FB8400B15E26 /* glbuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A016F4FB8400B15E26 /* glbuffer.c */; };
 		B124B8A316F5158B00B15E26 /* gldraw.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A216F5158B00B15E26 /* gldraw.c */; };
 		B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A416F536E900B15E26 /* glvertexarray.c */; };
 		B124B8A716F536F500B15E26 /* gluniform.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A616F536F500B15E26 /* gluniform.c */; };
@@ -87,7 +86,6 @@
 		149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		149A3E6016E7ECE1008911FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		149A3E6216E7ECF0008911FD /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = /System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<absolute>"; };
-		B124B8A016F4FB8400B15E26 /* glbuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glbuffer.c; sourceTree = "<group>"; };
 		B124B8A216F5158B00B15E26 /* gldraw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gldraw.c; sourceTree = "<group>"; };
 		B124B8A416F536E900B15E26 /* glvertexarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glvertexarray.c; sourceTree = "<group>"; };
 		B124B8A616F536F500B15E26 /* gluniform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniform.c; sourceTree = "<group>"; };
@@ -171,7 +169,6 @@
 				B1EFDADD16E815B400CB436E /* window.c */,
 				B15C055316EDC35D00DD7B28 /* pdutils.h */,
 				B15C055416EDC3D900DD7B28 /* pdutils.c */,
-				B124B8A016F4FB8400B15E26 /* glbuffer.c */,
 				B124B8A216F5158B00B15E26 /* gldraw.c */,
 				B12BA1A916F8F515007BF78F /* glclear.c */,
 				B1EFDADF16E83BFC00CB436E /* glshader.c */,
@@ -313,7 +310,6 @@
 				B1EFDADE16E815B400CB436E /* window.c in Sources */,
 				B1EFDAE016E83BFC00CB436E /* glshader.c in Sources */,
 				B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */,
-				B124B8A116F4FB8400B15E26 /* glbuffer.c in Sources */,
 				B124B8A316F5158B00B15E26 /* gldraw.c in Sources */,
 				B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */,
 				B124B8A716F536F500B15E26 /* gluniform.c in Sources */,

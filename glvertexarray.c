@@ -70,7 +70,10 @@ static void gl_vertexarray_init(t_gl_vertexarray_obj *obj) {
     glBindVertexArray(obj->vertexarray);
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
+    
     glBufferData(GL_ARRAY_BUFFER, obj->size, NULL, obj->glreadmode);
+    glUnmapBuffer(GL_ARRAY_BUFFER);
+    
     glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
     glBindVertexArray(prevboundvtxarray);
     obj->init = true;
@@ -120,13 +123,15 @@ static void gl_vertexarray_set(t_gl_vertexarray_obj *obj,
         glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
         float *ptr = glMapBufferRange(GL_ARRAY_BUFFER, offset*sizeof(float),
                                       len*sizeof(float),
-                                      GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT);
+                                      GL_MAP_WRITE_BIT|GL_MAP_INVALIDATE_RANGE_BIT
+                                      );
         if (ptr == NULL) {
             GLenum errv = glGetError();
             char * errstr = (errv==GL_INVALID_VALUE)?"GL_INVALID_VALUE":
                             ((errv==GL_INVALID_OPERATION)?"GL_INVALID_OPERATION":
                              ((errv==GL_OUT_OF_MEMORY?"GL_OUT_OF_MEMORY":"(unknown)")));
-            error("couldn't map buffer (%s) - null pointer received", errstr);
+            error("couldn't map buffer of object %d (%s) - null pointer received",
+                  obj->arraybuffer, errstr);
             return;
         }
         for (int i = 0; i<len; i++) {

@@ -21,7 +21,11 @@ typedef struct _gl_viewport_obj {
     t_outlet *out;
 } t_gl_viewport_obj;
 
-
+/**
+ * creates a [gl.viewport] object.
+ * mandatory arguments are x and y position
+ * and width and height of the new viewport
+ */
 static void *gl_viewport_new(t_float x, t_float y, t_float w, t_float h) {
     t_gl_viewport_obj *obj = (t_gl_viewport_obj *)pd_new(gl_viewport_class);
     obj->x = x;
@@ -36,15 +40,27 @@ static void *gl_viewport_new(t_float x, t_float y, t_float w, t_float h) {
     return (void *)obj;
 }
 
+/**
+ * [set x y w h[
+ * sets the viewport dimensions
+ */
 static void gl_viewport_set(t_gl_viewport_obj *obj,
                             t_float x, t_float y, t_float w, t_float h) {
     obj->x = x; obj->y = y; obj->width = w; obj->height = h;
 }
 
+/**
+ * the render call
+ * stores previous viewport dimensions, sets up it's own dimensions, forwards
+ * the render call to other objects then resets to the previous viewport
+ */
 static void gl_viewport_render(t_gl_viewport_obj *obj,
                                t_symbol *sym, int argc, t_atom *argv) {
+    int oldviewport[4];
+    glGetIntegerv(GL_VIEWPORT, oldviewport);
     glViewport(obj->x, obj->y, obj->width, obj->height);
     outlet_anything(obj->out, sym, argc, argv);
+    glViewport(oldviewport[0], oldviewport[1], oldviewport[2], oldviewport[3]);
 }
 
 void gl_viewport_setup(void) {

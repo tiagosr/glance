@@ -17,6 +17,7 @@
 
 static t_class *gl_window_class;
 static t_class *gl_win_class;
+
 typedef struct _glwindow {
     t_object x_obj;
     t_symbol *name;
@@ -56,6 +57,9 @@ typedef struct _gl_renderhead_obj {
 
 static void gl_win_destroy(t_gl_win_obj *obj);
 
+/**
+ * sends stuff over to a [gl.win]'s outlet
+ */
 static void gl_win_send_list_to_outlets(t_gl_win_obj *obj, t_symbol *s, int argc, t_atom *argv) {
     while (obj != NULL) {
         outlet_list(obj->event_out, s, argc, argv);
@@ -63,12 +67,19 @@ static void gl_win_send_list_to_outlets(t_gl_win_obj *obj, t_symbol *s, int argc
     }
 }
 
+
+/**
+ * the event handler for each window.
+ * the frequency in which this function is called is currently set at 120 times/sec
+ */
 static void gl_win_event_tick(glwindow *win) {
     int arg_count, bytes_count;
     t_atom *arg_list;
     t_symbol *sym;
     SDL_Event event;
+    // loop while there are events in the queue
     while (SDL_PollEvent(&event)) {
+        // set up the argument lists for no event
         arg_list = NULL;
         sym = NULL;
         arg_count = 0;
@@ -82,6 +93,9 @@ static void gl_win_event_tick(glwindow *win) {
                 break;
             case SDL_WINDOWEVENT:
             {
+                // window events don't normally use both data1 and data2, but
+                // they'll be set to 0 when not used, and should be ignored on
+                // user patches.
                 char *windowev = "none";
                 switch (event.window.event) {
                     case SDL_WINDOWEVENT_SHOWN:
@@ -139,6 +153,9 @@ static void gl_win_event_tick(glwindow *win) {
                 break;
             case SDL_KEYDOWN:
             case SDL_KEYUP:
+                // special keys use some of the higher bits of an uint32_t,
+                // making floats lose precision - need to treat these some
+                // other way
                 arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
                 sym = &s_list;
                 SETSYMBOL(arg_list, (event.type==SDL_KEYUP)?gensym("keyup"):gensym("keydown"));
@@ -147,6 +164,7 @@ static void gl_win_event_tick(glwindow *win) {
                 arg_count = 3;
                 break;
             case SDL_MOUSEMOTION:
+                // z movement (mouse wheel) is treated separately
                 arg_list = getbytes(bytes_count = sizeof(t_atom)*5);
                 sym = &s_list;
                 SETSYMBOL(arg_list, gensym("mousemotion"));
@@ -158,6 +176,7 @@ static void gl_win_event_tick(glwindow *win) {
                 break;
             case SDL_MOUSEBUTTONDOWN:
             case SDL_MOUSEBUTTONUP:
+                // fourth element in list is mouse button index
                 arg_list = getbytes(bytes_count = sizeof(t_atom)*4);
                 sym = &s_list;
                 SETSYMBOL(arg_list, (event.type==SDL_MOUSEBUTTONUP)?gensym("mousebuttonup"):gensym("mousebuttondown"));
@@ -167,6 +186,7 @@ static void gl_win_event_tick(glwindow *win) {
                 arg_count = 4;
                 break;
             case SDL_MOUSEWHEEL:
+                // x and y are deltas over wheel movement
                 arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
                 sym = &s_list;
                 SETSYMBOL(arg_list, gensym("mousewheel"));
@@ -177,33 +197,47 @@ static void gl_win_event_tick(glwindow *win) {
             default:
                 break;
         }
+        // if sym is set to something (most likely &s_list) we send the lists
+        // to the outlets of gl.win's
         if (sym) {
             gl_win_send_list_to_outlets(win->win_head, sym, arg_count, arg_list);
         }
+        // if list storage was requested, that storage will be reclaimed
         if (arg_list) {
             freebytes(arg_list, bytes_count);
         }
     }
+    // schedule next call to this function
     if (win->window) {
         clock_delay(win->event_clock, win->event_delta_time);
     }
 }
 
+/**
+ * render head function
+ * dispatches render calls to gl.* objects
+ */
 static void gl_win_window_tick(glwindow *win) {
     t_gl_renderhead_obj *head = win->rh_head;
-    int counter = 0;
     while (head) {
         outlet_anything(head->render_out, render, 0, 0);
         head = head->next;
-        counter++;
     }
-    //post("sent to %d render heads.", counter);
+    // stuff rendered, swap window to show rendered stuff
     SDL_GL_SwapWindow(win->window);
+    // schedule next call to this function
     if (win->keep_rendering) {
         clock_delay(win->dispatch_clock, win->frame_delta_time);
     }
 }
 
+/**
+ * creates an internal window object, registering event and render callbacks
+ * and saving the object to a symbol hash
+ *
+ * @param name window name
+ * @return a glwindow object with all the setup
+ */
 static glwindow *gl_win_new_window(t_symbol *name) {
     glwindow *newwin = (glwindow *)pd_new(gl_window_class);
     memset(newwin, 0, sizeof(glwindow));
@@ -216,6 +250,13 @@ static glwindow *gl_win_new_window(t_symbol *name) {
     return newwin;
 }
 
+/**
+ * finds a named window object. if it doesn't exist, create it
+ * (for internal use, so the automatic creation of a new object is not a problem)
+ *
+ * @param name window name
+ * @return the corresponding window object
+ */
 static glwindow *gl_find_window(t_symbol *name) {
     glwindow *window = NULL;
     HASH_FIND_PTR(windows, &name, window);

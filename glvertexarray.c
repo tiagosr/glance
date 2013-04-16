@@ -46,13 +46,13 @@ static t_sym_uint_list gl_arrayread_modes[] = {
     {0,0}
 };
 
-static void *gl_vertexarray_new(t_symbol *readmode, t_float components, t_float flength) {
+static void *gl_vertexarray_new(t_symbol *readmode, t_float position, t_float components, t_float flength) {
     t_gl_vertexarray_obj *obj = NULL;
     obj = (t_gl_vertexarray_obj *)pd_new(gl_vertexarray_class);
     obj->glreadmode = GL_STATIC_COPY;
     find_uint_for_sym(gl_arrayread_modes, readmode, &obj->glreadmode);
     obj->init = false;
-    obj->attribindex = 0;
+    obj->attribindex = position;
     obj->normalized = false;
     obj->size = sizeof(float)*(unsigned)components*(unsigned)flength;
     obj->stride = components*sizeof(float);
@@ -65,8 +65,13 @@ static void *gl_vertexarray_new(t_symbol *readmode, t_float components, t_float 
 static void gl_vertexarray_init(t_gl_vertexarray_obj *obj) {
     glGenVertexArrays(1, &obj->vertexarray);
     glGenBuffers(1, &obj->arraybuffer);
-    int prevboundbuffer = 0, prevboundvtxarray = 0;
+    int prevboundbuffer = 0, prevboundvtxarray = 0, prevboundvtxattribenabled = 0;
     glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevboundvtxarray);
+    glGetVertexAttribiv(obj->attribindex, GL_VERTEX_ATTRIB_ARRAY_ENABLED,
+                        &prevboundvtxattribenabled);
+    if(!prevboundvtxattribenabled) {
+        glEnableVertexAttribArray(obj->attribindex);
+    }
     glBindVertexArray(obj->vertexarray);
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
     glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
@@ -76,6 +81,9 @@ static void gl_vertexarray_init(t_gl_vertexarray_obj *obj) {
     
     glBindBuffer(GL_ARRAY_BUFFER, prevboundbuffer);
     glBindVertexArray(prevboundvtxarray);
+    if (!prevboundvtxattribenabled) {
+        glDisableVertexAttribArray(obj->attribindex);
+    }
     obj->init = true;
 }
 
@@ -97,8 +105,8 @@ static void gl_vertexarray_render(t_gl_vertexarray_obj *obj,
     glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &prevboundbuffer);
     glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevboundvtxarray);
     glBindVertexArray(obj->vertexarray);
-    glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
     glEnableVertexAttribArray(obj->attribindex);
+    //glBindBuffer(GL_ARRAY_BUFFER, obj->arraybuffer);
     glVertexAttribPointer(GL_ARRAY_BUFFER,
                           obj->size, obj->type, obj->normalized,
                           obj->stride, 0);
@@ -188,7 +196,7 @@ void gl_vertexarray_setup(void) {
                                      (t_newmethod)gl_vertexarray_new, 0,
                                      sizeof(t_gl_vertexarray_obj),
                                      CLASS_DEFAULT,
-                                     A_SYMBOL, A_FLOAT, A_FLOAT, 0);
+                                     A_SYMBOL, A_FLOAT, A_FLOAT, A_FLOAT, 0);
     
     class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_render,
                     render, A_GIMME, 0);

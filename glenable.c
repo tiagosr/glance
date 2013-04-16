@@ -52,6 +52,9 @@ static t_sym_uint_list gl_switch_modes[] = {
     {0,0}
 };
 
+/**
+ * Creates and sets up a [gl.enable] object
+ */
 static void *gl_switch_enable_new(t_symbol *sym) {
     GLenum mode = 0;
     if (!find_uint_for_sym(gl_switch_modes, sym, &mode)) {
@@ -65,6 +68,9 @@ static void *gl_switch_enable_new(t_symbol *sym) {
     obj->out = outlet_new(&obj->x_obj, &s_anything);
     return (void *)obj;
 }
+/**
+ * Creates and sets up a [gl.disable] object
+ */
 static void *gl_switch_disable_new(t_symbol *sym) {
     GLenum mode = 0;
     if (!find_uint_for_sym(gl_switch_modes, sym, &mode)) {

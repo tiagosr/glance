@@ -110,7 +110,7 @@ static void gl_uniform_mtx3f_mtx(t_gl_uniform_mtx3f *obj,
         // fail silently?
     } else {
         for (int i = 0; i < 9; i++) {
-            obj->value[i] = atom_getfloat(argv+i);
+            obj->value[i] = atom_getfloatarg(i, argc, argv);
         }
     }
 }
@@ -121,7 +121,7 @@ static void gl_uniform_mtx4f_mtx(t_gl_uniform_mtx4f *obj,
         // fail silently?
     } else {
         for (int i = 0; i < 16; i++) {
-            obj->value[i] = atom_getfloat(argv+i);
+            obj->value[i] = atom_getfloatarg(i, argc, argv);
         }
     }
 }
@@ -386,12 +386,12 @@ static void gl_uniform_mtx4f_frustum(t_gl_uniform_mtx4f *obj,
         return;
     }
     t_float
-        left = atom_getfloat(argv+0),
-        right = atom_getfloat(argv+1),
-        bottom = atom_getfloat(argv+2),
-        top = atom_getfloat(argv+3),
-        near = atom_getfloat(argv+4),
-        far = atom_getfloat(argv+5),
+        left = atom_getfloatarg(0, argc, argv),
+        right = atom_getfloatarg(1, argc, argv),
+        bottom = atom_getfloatarg(2, argc, argv),
+        top = atom_getfloatarg(3, argc, argv),
+        near = atom_getfloatarg(4, argc, argv),
+        far = atom_getfloatarg(5, argc, argv),
         rl = 1.0 / (right - left),
         tb = 1.0 / (top - bottom),
         nf = 1.0 / (near - far);
@@ -442,12 +442,12 @@ static void gl_uniform_mtx4f_ortho(t_gl_uniform_mtx4f *obj,
         return;
     }
     t_float
-        left = atom_getfloat(argv+0),
-        right = atom_getfloat(argv+1),
-        bottom = atom_getfloat(argv+2),
-        top = atom_getfloat(argv+3),
-        near = atom_getfloat(argv+4),
-        far = atom_getfloat(argv+5),
+        left = atom_getfloatarg(0, argc, argv),
+        right = atom_getfloatarg(1, argc, argv),
+        bottom = atom_getfloatarg(2, argc, argv),
+        top = atom_getfloatarg(3, argc, argv),
+        near = atom_getfloatarg(4, argc, argv),
+        far = atom_getfloatarg(5, argc, argv),
         lr = 1.0 / (left - right),
         bt = 1.0 / (bottom - top),
         nf = 1.0 / (near - far);

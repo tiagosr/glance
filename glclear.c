@@ -38,7 +38,7 @@ static void *gl_clear_new(t_symbol *sym, int argc, t_atom *argv) {
     obj->stencil = 0;
     obj->mask = 0;
     for (int i = 0; i < argc; i++) {
-        t_symbol *arg = atom_getsymbol(argv+i);
+        t_symbol *arg = atom_getsymbolarg(i, argc, argv);
         GLbitfield mask = 0;
         find_uint_for_sym(gl_clear_modes, arg, &mask);
         obj->mask |= mask;

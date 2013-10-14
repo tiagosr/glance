@@ -153,11 +153,9 @@ How to build/run
 
 ### On OS X:
 
-Download the SDL2 source from hg.libsdl.org
+Install FreeImage and glfw3 (if installing from homebrew on Mac OS X 64 bit, do it with --universal to build a 32 bit compatible version)
 
-Install FreeImage (if installing from homebrew on Mac OS X 64 bit, do it with --universal to build a 32 bit compatible version)
-
-Build it with Xcode
+Build the package with Xcode
 
 Install glance.pd_darwin into Pd
 

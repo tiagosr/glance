@@ -91,6 +91,7 @@ static void gl_win_event_tick(glwindow *win) {
  * dispatches render calls to gl.* objects
  */
 static void gl_win_window_tick(glwindow *win) {
+    glfwMakeContextCurrent(win->window);
     t_gl_renderhead_obj *head = win->rh_head;
     while (head) {
         outlet_anything(head->render_out, render, 0, 0);
@@ -167,7 +168,7 @@ static void glfw_mouse_enter_callback(GLFWwindow *window, int entered) {
     freebytes(arg_list, bytes_count);
 }
 
-static void glfw_unicode_char_callback(GLFWwindow *window, int codepoint) {
+static void glfw_unicode_char_callback(GLFWwindow *window, unsigned int codepoint) {
     t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
@@ -195,6 +196,79 @@ static void glfw_mouse_scroll_callback(GLFWwindow *window, double x, double y) {
     gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
     freebytes(arg_list, bytes_count);
 }
+
+static void glfw_window_pos_callback(GLFWwindow *window, int w, int h) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+    sym = &s_list;
+    SETSYMBOL(arg_list, gensym("window-position"));
+    SETFLOAT(arg_list+1, w);
+    SETFLOAT(arg_list+2, h);
+    arg_count = 3;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+static void glfw_window_resize_callback(GLFWwindow *window, int w, int h) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+    sym = &s_list;
+    SETSYMBOL(arg_list, gensym("window-resize"));
+    SETFLOAT(arg_list+1, w);
+    SETFLOAT(arg_list+2, h);
+    arg_count = 3;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+static void glfw_window_close_callback(GLFWwindow *window) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom));
+    sym = &s_list;
+    SETSYMBOL(arg_list, gensym("window-close"));
+    arg_count = 1;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+static void glfw_window_focus_callback(GLFWwindow *window, int focus) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
+    sym = &s_list;
+    SETSYMBOL(arg_list, (focus==GL_TRUE)?gensym("window-focus"):gensym("window-defocus"));
+    SETFLOAT(arg_list+1, focus);
+    arg_count = 2;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+static void glfw_window_iconify_callback(GLFWwindow *window, int focus) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
+    sym = &s_list;
+    SETSYMBOL(arg_list, (focus==GL_TRUE)?gensym("window-iconify"):gensym("window-restore"));
+    SETFLOAT(arg_list+1, focus);
+    arg_count = 2;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+
 
 /**
  * creates an internal window object, registering event and render callbacks
@@ -311,7 +385,12 @@ static void gl_win_create(t_gl_win_obj *obj) {
     glfwSetMouseButtonCallback(obj->window->window, glfw_mouse_button_callback);
     glfwSetScrollCallback(obj->window->window, glfw_mouse_scroll_callback);
     glfwSetCursorEnterCallback(obj->window->window, glfw_mouse_enter_callback);
-    
+    glfwSetCharCallback(obj->window->window, glfw_unicode_char_callback);
+    glfwSetWindowCloseCallback(obj->window->window, glfw_window_close_callback);
+    glfwSetWindowFocusCallback(obj->window->window, glfw_window_focus_callback);
+    glfwSetWindowIconifyCallback(obj->window->window, glfw_window_iconify_callback);
+    glfwSetWindowPosCallback(obj->window->window, glfw_window_pos_callback);
+    glfwSetWindowSizeCallback(obj->window->window, glfw_window_resize_callback);
     
     glfwGetCursorPos(obj->window->window, &obj->window->old_cursor_x, &obj->window->old_cursor_y);
     gl_win_event_tick(obj->window);

@@ -8,9 +8,10 @@
 
 #include "m_pd.h"
 #include <stdio.h>
-#include <SDL.h>
-#include <OpenGL/OpenGL.h>
-#include <OpenGl/gl3.h>
+#include <math.h>
+#include <stdbool.h>
+#define GLFW_INCLUDE_GLCOREARB
+#include <GLFW/glfw3.h>
 #include "glance.h"
 
 /*

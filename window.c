@@ -12,15 +12,8 @@
 #include <stdbool.h>
 #include "utstring.h"
 #include "uthash.h"
-
-#if defined USE_SDL
-#include <OpenGL/OpenGL.h>
-#include <OpenGl/gl3.h>
-#include <SDL.h>
-#elif defined USE_GLFW
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
-#endif
 
 
 static t_class *gl_window_class;
@@ -86,146 +79,7 @@ static void gl_win_send_list_to_outlets(t_gl_win_obj *obj, t_symbol *s, int argc
  * the frequency in which this function is called is currently set at 120 times/sec
  */
 static void gl_win_event_tick(glwindow *win) {
-#if defined USE_SDL
-    int arg_count, bytes_count;
-    t_atom *arg_list;
-    t_symbol *sym;
-    SDL_Event event;
-    // loop while there are events in the queue
-    while (SDL_PollEvent(&event)) {
-        // set up the argument lists for no event
-        arg_list = NULL;
-        sym = NULL;
-        arg_count = 0;
-        bytes_count = 0;
-        switch (event.type) {
-            case SDL_QUIT:
-                arg_list = getbytes(bytes_count = sizeof(t_atom));
-                sym = &s_list;
-                SETSYMBOL(arg_list, gensym("quit"));
-                arg_count = 1;
-                break;
-            case SDL_WINDOWEVENT:
-            {
-                // window events don't normally use both data1 and data2, but
-                // they'll be set to 0 when not used, and should be ignored on
-                // user patches.
-                char *windowev = "none";
-                switch (event.window.event) {
-                    case SDL_WINDOWEVENT_SHOWN:
-                        windowev = "shown";
-                        break;
-                    case SDL_WINDOWEVENT_CLOSE:
-                        windowev = "close";
-                        break;
-                    case SDL_WINDOWEVENT_ENTER:
-                        windowev = "enter";
-                        break;
-                    case SDL_WINDOWEVENT_EXPOSED:
-                        windowev = "exposed";
-                        break;
-                    case SDL_WINDOWEVENT_FOCUS_GAINED:
-                        windowev = "focus_gained";
-                        break;
-                    case SDL_WINDOWEVENT_FOCUS_LOST:
-                        windowev = "focus_lost";
-                        break;
-                    case SDL_WINDOWEVENT_HIDDEN:
-                        windowev = "hidden";
-                        break;
-                    case SDL_WINDOWEVENT_LEAVE:
-                        windowev = "leave";
-                        break;
-                    case SDL_WINDOWEVENT_MAXIMIZED:
-                        windowev = "maximized";
-                        break;
-                    case SDL_WINDOWEVENT_MINIMIZED:
-                        windowev = "minimized";
-                        break;
-                    case SDL_WINDOWEVENT_MOVED:
-                        windowev = "moved";
-                        break;
-                    case SDL_WINDOWEVENT_RESIZED:
-                        windowev = "resized";
-                        break;
-                    case SDL_WINDOWEVENT_RESTORED:
-                        windowev = "restored";
-                        break;
-                    case SDL_WINDOWEVENT_SIZE_CHANGED:
-                        windowev = "size_changed";
-                        break;
-                    default:
-                        break;
-                }
-                arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
-                sym = &s_list;
-                SETSYMBOL(arg_list, gensym(windowev));
-                SETFLOAT(arg_list+1, event.window.data1);
-                SETFLOAT(arg_list+2, event.window.data2);
-                arg_count = 3;
-            }
-                break;
-            case SDL_KEYDOWN:
-            case SDL_KEYUP:
-                // special keys use some of the higher bits of an uint32_t,
-                // making floats lose precision - need to treat these some
-                // other way
-                arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
-                sym = &s_list;
-                SETSYMBOL(arg_list, (event.type==SDL_KEYUP)?gensym("keyup"):gensym("keydown"));
-                SETFLOAT(arg_list+1, event.key.keysym.sym);
-                SETFLOAT(arg_list+2, (event.type==SDL_KEYDOWN)?1:0);
-                arg_count = 3;
-                break;
-            case SDL_MOUSEMOTION:
-                // z movement (mouse wheel) is treated separately
-                arg_list = getbytes(bytes_count = sizeof(t_atom)*5);
-                sym = &s_list;
-                SETSYMBOL(arg_list, gensym("mousemotion"));
-                SETFLOAT(arg_list+1, event.motion.x);
-                SETFLOAT(arg_list+2, event.motion.y);
-                SETFLOAT(arg_list+3, event.motion.xrel);
-                SETFLOAT(arg_list+4, event.motion.yrel);
-                arg_count = 5;
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_MOUSEBUTTONUP:
-                // fourth element in list is mouse button index
-                arg_list = getbytes(bytes_count = sizeof(t_atom)*4);
-                sym = &s_list;
-                SETSYMBOL(arg_list, (event.type==SDL_MOUSEBUTTONUP)?gensym("mousebuttonup"):gensym("mousebuttondown"));
-                SETFLOAT(arg_list+1, event.button.x);
-                SETFLOAT(arg_list+2, event.button.y);
-                SETFLOAT(arg_list+3, event.button.button);
-                arg_count = 4;
-                break;
-            case SDL_MOUSEWHEEL:
-                // x and y are deltas over wheel movement
-                arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
-                sym = &s_list;
-                SETSYMBOL(arg_list, gensym("mousewheel"));
-                SETFLOAT(arg_list+1, event.wheel.x);
-                SETFLOAT(arg_list+2, event.wheel.y);
-                arg_count = 3;
-                break;
-            default:
-                break;
-        }
-        // if sym is set to something (most likely &s_list) we send the lists
-        // to the outlets of gl.win's
-        if (sym) {
-            gl_win_send_list_to_outlets(win->win_head, sym, arg_count, arg_list);
-        }
-        // if list storage was requested, that storage will be reclaimed
-        if (arg_list) {
-            freebytes(arg_list, bytes_count);
-        }
-    }
-
-#elif defined USE_GLFW
     glfwPollEvents();
-    
-#endif
     // schedule next call to this function
     if (win->window) {
         clock_delay(win->event_clock, win->event_delta_time);
@@ -242,19 +96,12 @@ static void gl_win_window_tick(glwindow *win) {
         outlet_anything(head->render_out, render, 0, 0);
         head = head->next;
     }
-#if defined USE_SDL
-    // stuff rendered, swap window to show rendered stuff
-    SDL_GL_SwapWindow(win->window);
-#elif defined USE_GLFW
     glfwSwapBuffers(win->window);
-#endif
     // schedule next call to this function
     if (win->keep_rendering) {
         clock_delay(win->dispatch_clock, win->frame_delta_time);
     }
 }
-
-#if defined USE_GLFW
 
 static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
@@ -306,7 +153,48 @@ static void glfw_mouse_button_callback(GLFWwindow *window, int button, int actio
     freebytes(arg_list, bytes_count);
 }
 
-#endif
+static void glfw_mouse_enter_callback(GLFWwindow *window, int entered) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
+    sym = &s_list;
+    SETSYMBOL(arg_list, (entered==GL_TRUE)?gensym("mouseentered"):gensym("mouseexited"));
+    SETFLOAT(arg_list+1, entered);
+    arg_count = 2;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+static void glfw_unicode_char_callback(GLFWwindow *window, int codepoint) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
+    sym = &s_list;
+    SETSYMBOL(arg_list, gensym("unicode-char"));
+    SETFLOAT(arg_list+1, codepoint);
+    arg_count = 2;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+static void glfw_mouse_scroll_callback(GLFWwindow *window, double x, double y) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+    sym = &s_list;
+    SETSYMBOL(arg_list, gensym("mousewheel"));
+    SETFLOAT(arg_list+1, x);
+    SETFLOAT(arg_list+2, y);
+    arg_count = 3;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
 
 /**
  * creates an internal window object, registering event and render callbacks
@@ -389,26 +277,6 @@ static void gl_win_obj_destroy(t_gl_win_obj *obj) {
 
 
 static void gl_win_title(t_gl_win_obj *obj, t_symbol *sym, int argc, t_atom *argv) {
-#if defined USE_SDL
-    if (obj->window->window == NULL) {
-        if (obj->window->name == default_window) {
-            post("no window was created for the default gl_win object\n");
-        } else {
-            post("no window was created for the \"$s\" gl_win object\n",
-                 obj->window->name->s_name);
-        }
-        return;
-    }
-    if (obj->title) {
-        free(obj->title);
-    }
-    obj->title = malloc(strlen(s->s_name)+1);
-    strcpy(obj->title, s->s_name);
-    
-    if (obj->window->window) {
-        SDL_SetWindowTitle(obj->window->window, obj->title);
-    }
-#elif defined USE_GLFW
     if (obj->window->window <= 0) {
         if (obj->window->name == default_window) {
             post("no window was created for the default gl_win object\n");
@@ -422,7 +290,6 @@ static void gl_win_title(t_gl_win_obj *obj, t_symbol *sym, int argc, t_atom *arg
     }
     obj->title = list_to_string(argc, argv);
     glfwSetWindowTitle(obj->window->window, obj->title);
-#endif
 }
 
 static void gl_win_dimen(t_gl_win_obj *obj, float width, float height) {
@@ -435,18 +302,6 @@ static void gl_win_create(t_gl_win_obj *obj) {
         post("window already created");
         return;
     }
-#if defined USE_SDL
-    obj->window->window = SDL_CreateWindow(obj->title,
-                                   SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                   obj->width, obj->height,
-                                   SDL_WINDOW_OPENGL|
-                                   (obj->fullscreen?SDL_WINDOW_FULLSCREEN:0));
-    obj->window->glcontext = SDL_GL_CreateContext(obj->window->window);
-    int gl_major = 0, gl_minor = 0;
-    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_major);
-    SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &gl_minor);
-    post("gl context version: %d.%d",gl_major, gl_minor);
-#elif defined USE_GLFW
     obj->window->window = glfwCreateWindow(obj->width, obj->height,
                                            (obj->title)?obj->title:"Glance window",
                                            NULL, NULL);
@@ -454,19 +309,16 @@ static void gl_win_create(t_gl_win_obj *obj) {
     glfwSetKeyCallback(obj->window->window, glfw_key_callback);
     glfwSetCursorPosCallback(obj->window->window, glfw_mouse_pos_callback);
     glfwSetMouseButtonCallback(obj->window->window, glfw_mouse_button_callback);
+    glfwSetScrollCallback(obj->window->window, glfw_mouse_scroll_callback);
+    glfwSetCursorEnterCallback(obj->window->window, glfw_mouse_enter_callback);
     
-#endif
+    
+    glfwGetCursorPos(obj->window->window, &obj->window->old_cursor_x, &obj->window->old_cursor_y);
     gl_win_event_tick(obj->window);
 }
 
 static void gl_win_fullscreen(t_gl_win_obj *obj, t_float fs) {
-#if defined USE_SDL
-    if (obj->window) {
-        SDL_SetWindowFullscreen(obj->window->window, fs!=0.0);
-    }
-#elif defined USE_GLFW
     
-#endif
     obj->fullscreen = fs != 0.0;
 }
 
@@ -481,22 +333,12 @@ static void gl_win_render(t_gl_win_obj *obj, t_float f) {
 }
 
 static void gl_win_window_destroy(glwindow *obj) {
-#if defined USE_SDL
-    if (obj->window == NULL) {
-        post("no window to destroy");
-        return;
-    }
-    SDL_GL_DeleteContext(obj->glcontext);
-    SDL_DestroyWindow(obj->window);
-    obj->window = NULL;
-#elif defined USE_GLFW
     if (obj->window == NULL) {
         post("no window to destroy");
         return;
     }
     glfwDestroyWindow(obj->window);
     obj->window = NULL;
-#endif
 }
 
 static void gl_win_destroy(t_gl_win_obj *obj) {

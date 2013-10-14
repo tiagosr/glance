@@ -7,16 +7,8 @@
 //
 
 #include "m_pd.h"
-
-#if defined USE_SDL
-#include <SDL.h>
-#include <OpenGL/OpenGL.h>
-#include <OpenGl/gl3.h>
-#elif defined USE_GLFW
 #define GLFW_INCLUDE_GLCOREARB
 #include <GLFW/glfw3.h>
-#endif
-
 #include <stdio.h>
 #include "glance.h"
 
@@ -54,23 +46,7 @@ void glance_setup(void) {
                            0);
     class_addbang(glance_class, glance_bang);
     
-#if defined USE_SDL
-    // Initializing SDL
-    SDL_Init(SDL_INIT_EVERYTHING);
-    
-    // Setting up the minimal OpenGL version
-    // (3.2, which is the minimal for OS X 10.6/10.7/10.8)
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-    
-    // Setting double buffering
-    // (seems somewhat standard - no change from when unset)
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    // Setting depth buffer precision to 24 bits
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-#elif defined USE_GLFW
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
@@ -78,7 +54,6 @@ void glance_setup(void) {
     
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
     glfwInit();
-#endif
     
     // Setting up Pd object classes
     gl_win_setup();

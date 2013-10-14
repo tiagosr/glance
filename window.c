@@ -9,11 +9,19 @@
 #include "m_pd.h"
 #include "glance.h"
 #include <stdio.h>
+#include <stdbool.h>
 #include "utstring.h"
 #include "uthash.h"
-#include <SDL.h>
+
+#if defined USE_SDL
 #include <OpenGL/OpenGL.h>
 #include <OpenGl/gl3.h>
+#include <SDL.h>
+#elif defined USE_GLFW
+#define GLFW_INCLUDE_GLCOREARB
+#include <GLFW/glfw3.h>
+#endif
+
 
 static t_class *gl_window_class;
 static t_class *gl_win_class;
@@ -21,8 +29,13 @@ static t_class *gl_win_class;
 typedef struct _glwindow {
     t_object x_obj;
     t_symbol *name;
+#if defined USE_SDL
     SDL_Window *window;
     SDL_GLContext *glcontext;
+#elif defined USE_GLFW
+    GLFWwindow *window;
+    double old_cursor_x, old_cursor_y;
+#endif
     t_clock *dispatch_clock;
     t_clock *event_clock;
     float frame_delta_time;
@@ -73,6 +86,7 @@ static void gl_win_send_list_to_outlets(t_gl_win_obj *obj, t_symbol *s, int argc
  * the frequency in which this function is called is currently set at 120 times/sec
  */
 static void gl_win_event_tick(glwindow *win) {
+#if defined USE_SDL
     int arg_count, bytes_count;
     t_atom *arg_list;
     t_symbol *sym;
@@ -207,6 +221,11 @@ static void gl_win_event_tick(glwindow *win) {
             freebytes(arg_list, bytes_count);
         }
     }
+
+#elif defined USE_GLFW
+    glfwPollEvents();
+    
+#endif
     // schedule next call to this function
     if (win->window) {
         clock_delay(win->event_clock, win->event_delta_time);
@@ -223,13 +242,71 @@ static void gl_win_window_tick(glwindow *win) {
         outlet_anything(head->render_out, render, 0, 0);
         head = head->next;
     }
+#if defined USE_SDL
     // stuff rendered, swap window to show rendered stuff
     SDL_GL_SwapWindow(win->window);
+#elif defined USE_GLFW
+    glfwSwapBuffers(win->window);
+#endif
     // schedule next call to this function
     if (win->keep_rendering) {
         clock_delay(win->dispatch_clock, win->frame_delta_time);
     }
 }
+
+#if defined USE_GLFW
+
+static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+    sym = &s_list;
+    SETSYMBOL(arg_list, (action==GLFW_PRESS)?gensym("keydown"):((action==GLFW_REPEAT)?gensym("keyrepeat"):gensym("keyup")));
+    SETFLOAT(arg_list+1, key);
+    SETFLOAT(arg_list+2, (action==GLFW_PRESS||action==GLFW_REPEAT)?1:0);
+    arg_count = 3;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+static void glfw_mouse_pos_callback(GLFWwindow *window, double x, double y) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*5);
+    sym = &s_list;
+    SETSYMBOL(arg_list, gensym("mousemotion"));
+    SETFLOAT(arg_list+1, x);
+    SETFLOAT(arg_list+2, y);
+    SETFLOAT(arg_list+3, x - winobj->window->old_cursor_x);
+    SETFLOAT(arg_list+4, x - winobj->window->old_cursor_y);
+    arg_count = 5;
+    winobj->window->old_cursor_x = x;
+    winobj->window->old_cursor_y = y;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+static void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_atom *arg_list;
+    int bytes_count, arg_count;
+    t_symbol *sym;
+    arg_list = getbytes(bytes_count = sizeof(t_atom)*4);
+    sym = &s_list;
+    SETSYMBOL(arg_list, (action==GLFW_PRESS)?gensym("mousebuttondown"):gensym("mousebuttonup"));
+    SETFLOAT(arg_list+1, winobj->window->old_cursor_x);
+    SETFLOAT(arg_list+2, winobj->window->old_cursor_y);
+    SETFLOAT(arg_list+3, button);
+    arg_count = 4;
+    gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
+    freebytes(arg_list, bytes_count);
+}
+
+#endif
 
 /**
  * creates an internal window object, registering event and render callbacks
@@ -311,7 +388,8 @@ static void gl_win_obj_destroy(t_gl_win_obj *obj) {
 }
 
 
-static void gl_win_title(t_gl_win_obj *obj, t_symbol *s) {
+static void gl_win_title(t_gl_win_obj *obj, t_symbol *sym, int argc, t_atom *argv) {
+#if defined USE_SDL
     if (obj->window->window == NULL) {
         if (obj->window->name == default_window) {
             post("no window was created for the default gl_win object\n");
@@ -330,6 +408,21 @@ static void gl_win_title(t_gl_win_obj *obj, t_symbol *s) {
     if (obj->window->window) {
         SDL_SetWindowTitle(obj->window->window, obj->title);
     }
+#elif defined USE_GLFW
+    if (obj->window->window <= 0) {
+        if (obj->window->name == default_window) {
+            post("no window was created for the default gl_win object\n");
+        } else {
+            post("no window was created for the \"$s\" gl_win object\n",
+                 obj->window->name->s_name);
+        }
+    }
+    if (obj->title) {
+        free(obj->title);
+    }
+    obj->title = list_to_string(argc, argv);
+    glfwSetWindowTitle(obj->window->window, obj->title);
+#endif
 }
 
 static void gl_win_dimen(t_gl_win_obj *obj, float width, float height) {
@@ -342,6 +435,7 @@ static void gl_win_create(t_gl_win_obj *obj) {
         post("window already created");
         return;
     }
+#if defined USE_SDL
     obj->window->window = SDL_CreateWindow(obj->title,
                                    SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                                    obj->width, obj->height,
@@ -352,13 +446,27 @@ static void gl_win_create(t_gl_win_obj *obj) {
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, &gl_major);
     SDL_GL_GetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, &gl_minor);
     post("gl context version: %d.%d",gl_major, gl_minor);
+#elif defined USE_GLFW
+    obj->window->window = glfwCreateWindow(obj->width, obj->height,
+                                           (obj->title)?obj->title:"Glance window",
+                                           NULL, NULL);
+    glfwSetWindowUserPointer(obj->window->window, obj);
+    glfwSetKeyCallback(obj->window->window, glfw_key_callback);
+    glfwSetCursorPosCallback(obj->window->window, glfw_mouse_pos_callback);
+    glfwSetMouseButtonCallback(obj->window->window, glfw_mouse_button_callback);
+    
+#endif
     gl_win_event_tick(obj->window);
 }
 
 static void gl_win_fullscreen(t_gl_win_obj *obj, t_float fs) {
+#if defined USE_SDL
     if (obj->window) {
         SDL_SetWindowFullscreen(obj->window->window, fs!=0.0);
     }
+#elif defined USE_GLFW
+    
+#endif
     obj->fullscreen = fs != 0.0;
 }
 
@@ -373,6 +481,7 @@ static void gl_win_render(t_gl_win_obj *obj, t_float f) {
 }
 
 static void gl_win_window_destroy(glwindow *obj) {
+#if defined USE_SDL
     if (obj->window == NULL) {
         post("no window to destroy");
         return;
@@ -380,6 +489,14 @@ static void gl_win_window_destroy(glwindow *obj) {
     SDL_GL_DeleteContext(obj->glcontext);
     SDL_DestroyWindow(obj->window);
     obj->window = NULL;
+#elif defined USE_GLFW
+    if (obj->window == NULL) {
+        post("no window to destroy");
+        return;
+    }
+    glfwDestroyWindow(obj->window);
+    obj->window = NULL;
+#endif
 }
 
 static void gl_win_destroy(t_gl_win_obj *obj) {
@@ -428,6 +545,8 @@ static void gl_head_destroy(t_gl_renderhead_obj *obj) {
 
 
 void gl_win_setup(void) {
+    
+    
     default_window = gensym(" glance default window ");
     gl_window_class = class_new(gensym(" glance_internal_window"),// with a space, to avoid instantiation from within a patch
                                 (t_newmethod)gl_win_new_window,

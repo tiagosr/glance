@@ -7,9 +7,16 @@
 //
 
 #include "m_pd.h"
+
+#if defined USE_SDL
 #include <SDL.h>
 #include <OpenGL/OpenGL.h>
 #include <OpenGl/gl3.h>
+#elif defined USE_GLFW
+#define GLFW_INCLUDE_GLCOREARB
+#include <GLFW/glfw3.h>
+#endif
+
 #include <stdio.h>
 #include "glance.h"
 
@@ -47,6 +54,7 @@ void glance_setup(void) {
                            0);
     class_addbang(glance_class, glance_bang);
     
+#if defined USE_SDL
     // Initializing SDL
     SDL_Init(SDL_INIT_EVERYTHING);
     
@@ -62,6 +70,15 @@ void glance_setup(void) {
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     // Setting depth buffer precision to 24 bits
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+#elif defined USE_GLFW
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    
+    glfwWindowHint(GLFW_DEPTH_BITS, 24);
+    glfwInit();
+#endif
     
     // Setting up Pd object classes
     gl_win_setup();

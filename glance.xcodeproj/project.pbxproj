@@ -26,8 +26,8 @@
 		B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18C16F7D39C007BF78F /* gltexture.c */; };
 		B12BA1AA16F8F515007BF78F /* glclear.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA1A916F8F515007BF78F /* glclear.c */; };
 		B12BA1AD16F9375C007BF78F /* libfreeimage-3.15.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */; };
-		B12BA1B416FA41B6007BF78F /* libSDL2.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B150E4AA16F20F6B00AC2DCD /* libSDL2.a */; };
 		B12BA1B616FAC2C5007BF78F /* glenable.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA1B516FAC2C4007BF78F /* glenable.c */; };
+		B1433CBC180B850F0043325A /* libglfw3.3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1433CBB180B850F0043325A /* libglfw3.3.0.dylib */; };
 		B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = B15C055416EDC3D900DD7B28 /* pdutils.c */; };
 		B15CE3FB16EA236300DD7B28 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F716EA236300DD7B28 /* utarray.h */; };
 		B15CE3FC16EA236300DD7B28 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F816EA236300DD7B28 /* uthash.h */; };
@@ -36,44 +36,6 @@
 		B1EFDADE16E815B400CB436E /* window.c in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDADD16E815B400CB436E /* window.c */; };
 		B1EFDAE016E83BFC00CB436E /* glshader.c in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDADF16E83BFC00CB436E /* glshader.c */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXContainerItemProxy section */
-		B150E4A716F20F6B00AC2DCD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BECDF66C0761BA81005FE872;
-			remoteInfo = Framework;
-		};
-		B150E4A916F20F6B00AC2DCD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BECDF6B30761BA81005FE872;
-			remoteInfo = "Static Library";
-		};
-		B150E4AB16F20F6B00AC2DCD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BECDF6BE0761BA81005FE872;
-			remoteInfo = "Standard DMG";
-		};
-		B150E4AD16F20F6B00AC2DCD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = BECDF6C30761BA81005FE872;
-			remoteInfo = "Developer Extras Package";
-		};
-		B150E4AF16F20F6B00AC2DCD /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 00D8D9EF1195090700638393;
-			remoteInfo = testsdl;
-		};
-/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		149A3E4816E7E455008911FD /* glance.pd_darwin */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = glance.pd_darwin; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -95,6 +57,7 @@
 		B12BA1A916F8F515007BF78F /* glclear.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glclear.c; sourceTree = "<group>"; };
 		B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libfreeimage-3.15.4.dylib"; path = "/usr/local/Cellar/freeimage/3.15.4/lib/libfreeimage-3.15.4.dylib"; sourceTree = "<absolute>"; };
 		B12BA1B516FAC2C4007BF78F /* glenable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glenable.c; sourceTree = "<group>"; };
+		B1433CBB180B850F0043325A /* libglfw3.3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw3.3.0.dylib; path = /usr/local/Cellar/glfw3/3.0.2/lib/libglfw3.3.0.dylib; sourceTree = "<absolute>"; };
 		B15C055316EDC35D00DD7B28 /* pdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pdutils.h; sourceTree = "<group>"; };
 		B15C055416EDC3D900DD7B28 /* pdutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pdutils.c; sourceTree = "<group>"; };
 		B15C055616EE8CA000DD7B28 /* glance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glance.h; sourceTree = "<group>"; };
@@ -104,7 +67,6 @@
 		B15CE3FA16EA236300DD7B28 /* utstring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utstring.h; sourceTree = "<group>"; };
 		B1EFDABC16E6E77A00CB436E /* m_pd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_pd.h; sourceTree = "<group>"; };
 		B1EFDABE16E6E7A300CB436E /* glance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glance.c; sourceTree = "<group>"; };
-		B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = SDL.xcodeproj; path = ../../libs/cpp/SDL/Xcode/SDL/SDL.xcodeproj; sourceTree = "<group>"; };
 		B1EFDADD16E815B400CB436E /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = window.c; sourceTree = "<group>"; };
 		B1EFDADF16E83BFC00CB436E /* glshader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glshader.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -114,7 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B12BA1B416FA41B6007BF78F /* libSDL2.a in Frameworks */,
+				B1433CBC180B850F0043325A /* libglfw3.3.0.dylib in Frameworks */,
 				B12BA1AD16F9375C007BF78F /* libfreeimage-3.15.4.dylib in Frameworks */,
 				149A3E5316E7EC5F008911FD /* AudioToolbox.framework in Frameworks */,
 				149A3E5716E7EC7F008911FD /* AudioUnit.framework in Frameworks */,
@@ -134,6 +96,7 @@
 		B12BA19416F80D9D007BF78F /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				B1433CBB180B850F0043325A /* libglfw3.3.0.dylib */,
 				B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */,
 				149A3E6216E7ECF0008911FD /* ForceFeedback.framework */,
 				149A3E6016E7ECE1008911FD /* Carbon.framework */,
@@ -148,22 +111,9 @@
 			name = Libraries;
 			sourceTree = "<group>";
 		};
-		B150E49F16F20F6B00AC2DCD /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				B150E4A816F20F6B00AC2DCD /* SDL2.framework */,
-				B150E4AA16F20F6B00AC2DCD /* libSDL2.a */,
-				B150E4AC16F20F6B00AC2DCD /* Standard DMG */,
-				B150E4AE16F20F6B00AC2DCD /* Developer Extras Package */,
-				B150E4B016F20F6B00AC2DCD /* testsdl.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		B1EFDA4516E6C63000CB436E = {
 			isa = PBXGroup;
 			children = (
-				B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */,
 				B1EFDABE16E6E7A300CB436E /* glance.c */,
 				B15C055616EE8CA000DD7B28 /* glance.h */,
 				B1EFDADD16E815B400CB436E /* window.c */,
@@ -250,56 +200,12 @@
 			mainGroup = B1EFDA4516E6C63000CB436E;
 			productRefGroup = B1EFDA4F16E6C63100CB436E /* Products */;
 			projectDirPath = "";
-			projectReferences = (
-				{
-					ProductGroup = B150E49F16F20F6B00AC2DCD /* Products */;
-					ProjectRef = B1EFDAC016E6ECA700CB436E /* SDL.xcodeproj */;
-				},
-			);
 			projectRoot = "";
 			targets = (
 				149A3E4716E7E455008911FD /* glance */,
 			);
 		};
 /* End PBXProject section */
-
-/* Begin PBXReferenceProxy section */
-		B150E4A816F20F6B00AC2DCD /* SDL2.framework */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.framework;
-			path = SDL2.framework;
-			remoteRef = B150E4A716F20F6B00AC2DCD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B150E4AA16F20F6B00AC2DCD /* libSDL2.a */ = {
-			isa = PBXReferenceProxy;
-			fileType = archive.ar;
-			path = libSDL2.a;
-			remoteRef = B150E4A916F20F6B00AC2DCD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B150E4AC16F20F6B00AC2DCD /* Standard DMG */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = "Standard DMG";
-			remoteRef = B150E4AB16F20F6B00AC2DCD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B150E4AE16F20F6B00AC2DCD /* Developer Extras Package */ = {
-			isa = PBXReferenceProxy;
-			fileType = "compiled.mach-o.executable";
-			path = "Developer Extras Package";
-			remoteRef = B150E4AD16F20F6B00AC2DCD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		B150E4B016F20F6B00AC2DCD /* testsdl.app */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.application;
-			path = testsdl.app;
-			remoteRef = B150E4AF16F20F6B00AC2DCD /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-/* End PBXReferenceProxy section */
 
 /* Begin PBXSourcesBuildPhase section */
 		149A3E4416E7E455008911FD /* Sources */ = {
@@ -335,14 +241,16 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/freeimage/3.15.4/lib,
+					/usr/local/Cellar/glfw3/3.0.2/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = (
 					"-undefined",
 					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "";
+				SYMROOT = "../pd objects";
 			};
 			name = Debug;
 		};
@@ -358,14 +266,16 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/freeimage/3.15.4/lib,
+					/usr/local/Cellar/glfw3/3.0.2/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				OTHER_LDFLAGS = (
 					"-undefined",
 					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "";
+				SYMROOT = "../pd objects";
 			};
 			name = Release;
 		};
@@ -390,6 +300,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
+					USE_GLFW,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -423,6 +334,7 @@
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = USE_GLFW;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;

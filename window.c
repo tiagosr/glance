@@ -19,6 +19,44 @@
 static t_class *gl_window_class;
 static t_class *gl_win_class;
 
+static t_symbol
+    *keydown,
+    *keyup,
+    *keyrepeat,
+    *mousemotion,
+    *mousebuttondown,
+    *mousebuttonup,
+    *mouseentered,
+    *mouseexited,
+    *mousewheel,
+    *unicodechar,
+    *windowposition,
+    *windowsize,
+    *windowclose,
+    *windowfocus,
+    *windowdefocus,
+    *windowiconify,
+    *windowrestore;
+
+static void setup_symbols() {
+    keydown = gensym("key-down");
+    keyup = gensym("key-up");
+    keyrepeat = gensym("key-repeat");
+    mousemotion = gensym("mouse-motion");
+    mouseentered = gensym("mouse-entered");
+    mouseexited = gensym("mouse-exited");
+    mousewheel = gensym("mouse-wheel");
+    mousebuttondown = gensym("mousebutton-down");
+    mousebuttondown = gensym("mousebutton-up");
+    unicodechar = gensym("unicode-char");
+    windowclose = gensym("window-close");
+    windowdefocus = gensym("window-defocus");
+    windowfocus = gensym("window-focus");
+    windowiconify = gensym("window-iconify");
+    windowrestore = gensym("window-restore");
+    windowposition = gensym("window-position");
+}
+
 typedef struct _glwindow {
     t_object x_obj;
     t_symbol *name;
@@ -34,6 +72,7 @@ typedef struct _glwindow {
     float frame_delta_time;
     float event_delta_time;
     bool keep_rendering;
+    bool reset;
     struct _gl_renderhead_obj *rh_head;
     struct _gl_win_obj *win_head;
     int refcount;
@@ -94,6 +133,9 @@ static void gl_win_window_tick(glwindow *win) {
     glfwMakeContextCurrent(win->window);
     t_gl_renderhead_obj *head = win->rh_head;
     while (head) {
+        if (!win->reset) {
+            outlet_anything(head->render_out, reset, 0, 0);
+        }
         outlet_anything(head->render_out, render, 0, 0);
         head = head->next;
     }
@@ -102,6 +144,7 @@ static void gl_win_window_tick(glwindow *win) {
     if (win->keep_rendering) {
         clock_delay(win->dispatch_clock, win->frame_delta_time);
     }
+    win->reset = true;
 }
 
 static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
@@ -111,7 +154,7 @@ static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int act
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
     sym = &s_list;
-    SETSYMBOL(arg_list, (action==GLFW_PRESS)?gensym("keydown"):((action==GLFW_REPEAT)?gensym("keyrepeat"):gensym("keyup")));
+    SETSYMBOL(arg_list, (action==GLFW_PRESS)?keydown:((action==GLFW_REPEAT)?keyrepeat:keyup));
     SETFLOAT(arg_list+1, key);
     SETFLOAT(arg_list+2, (action==GLFW_PRESS||action==GLFW_REPEAT)?1:0);
     arg_count = 3;
@@ -126,7 +169,7 @@ static void glfw_mouse_pos_callback(GLFWwindow *window, double x, double y) {
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*5);
     sym = &s_list;
-    SETSYMBOL(arg_list, gensym("mousemotion"));
+    SETSYMBOL(arg_list, mousemotion);
     SETFLOAT(arg_list+1, x);
     SETFLOAT(arg_list+2, y);
     SETFLOAT(arg_list+3, x - winobj->window->old_cursor_x);
@@ -145,7 +188,7 @@ static void glfw_mouse_button_callback(GLFWwindow *window, int button, int actio
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*4);
     sym = &s_list;
-    SETSYMBOL(arg_list, (action==GLFW_PRESS)?gensym("mousebuttondown"):gensym("mousebuttonup"));
+    SETSYMBOL(arg_list, (action==GLFW_PRESS)?mousebuttondown:mousebuttonup);
     SETFLOAT(arg_list+1, winobj->window->old_cursor_x);
     SETFLOAT(arg_list+2, winobj->window->old_cursor_y);
     SETFLOAT(arg_list+3, button);
@@ -161,7 +204,7 @@ static void glfw_mouse_enter_callback(GLFWwindow *window, int entered) {
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
     sym = &s_list;
-    SETSYMBOL(arg_list, (entered==GL_TRUE)?gensym("mouseentered"):gensym("mouseexited"));
+    SETSYMBOL(arg_list, (entered==GL_TRUE)?mouseentered:mouseexited);
     SETFLOAT(arg_list+1, entered);
     arg_count = 2;
     gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
@@ -175,7 +218,7 @@ static void glfw_unicode_char_callback(GLFWwindow *window, unsigned int codepoin
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
     sym = &s_list;
-    SETSYMBOL(arg_list, gensym("unicode-char"));
+    SETSYMBOL(arg_list, unicodechar);
     SETFLOAT(arg_list+1, codepoint);
     arg_count = 2;
     gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
@@ -189,7 +232,7 @@ static void glfw_mouse_scroll_callback(GLFWwindow *window, double x, double y) {
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
     sym = &s_list;
-    SETSYMBOL(arg_list, gensym("mousewheel"));
+    SETSYMBOL(arg_list, mousewheel);
     SETFLOAT(arg_list+1, x);
     SETFLOAT(arg_list+2, y);
     arg_count = 3;
@@ -204,7 +247,7 @@ static void glfw_window_pos_callback(GLFWwindow *window, int w, int h) {
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
     sym = &s_list;
-    SETSYMBOL(arg_list, gensym("window-position"));
+    SETSYMBOL(arg_list, windowposition);
     SETFLOAT(arg_list+1, w);
     SETFLOAT(arg_list+2, h);
     arg_count = 3;
@@ -219,7 +262,7 @@ static void glfw_window_resize_callback(GLFWwindow *window, int w, int h) {
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
     sym = &s_list;
-    SETSYMBOL(arg_list, gensym("window-resize"));
+    SETSYMBOL(arg_list, windowsize);
     SETFLOAT(arg_list+1, w);
     SETFLOAT(arg_list+2, h);
     arg_count = 3;
@@ -234,7 +277,7 @@ static void glfw_window_close_callback(GLFWwindow *window) {
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom));
     sym = &s_list;
-    SETSYMBOL(arg_list, gensym("window-close"));
+    SETSYMBOL(arg_list, windowclose);
     arg_count = 1;
     gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
     freebytes(arg_list, bytes_count);
@@ -247,7 +290,7 @@ static void glfw_window_focus_callback(GLFWwindow *window, int focus) {
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
     sym = &s_list;
-    SETSYMBOL(arg_list, (focus==GL_TRUE)?gensym("window-focus"):gensym("window-defocus"));
+    SETSYMBOL(arg_list, (focus==GL_TRUE)?windowfocus:windowdefocus);
     SETFLOAT(arg_list+1, focus);
     arg_count = 2;
     gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
@@ -261,7 +304,7 @@ static void glfw_window_iconify_callback(GLFWwindow *window, int focus) {
     t_symbol *sym;
     arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
     sym = &s_list;
-    SETSYMBOL(arg_list, (focus==GL_TRUE)?gensym("window-iconify"):gensym("window-restore"));
+    SETSYMBOL(arg_list, (focus==GL_TRUE)?windowiconify:windowrestore);
     SETFLOAT(arg_list+1, focus);
     arg_count = 2;
     gl_win_send_list_to_outlets(winobj, sym, arg_count, arg_list);
@@ -467,7 +510,7 @@ static void gl_head_destroy(t_gl_renderhead_obj *obj) {
 
 void gl_win_setup(void) {
     
-    
+    setup_symbols();
     default_window = gensym(" glance default window ");
     gl_window_class = class_new(gensym(" glance_internal_window"),// with a space, to avoid instantiation from within a patch
                                 (t_newmethod)gl_win_new_window,

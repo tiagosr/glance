@@ -12,14 +12,17 @@
 #include "pdutils.h"
 
 extern t_symbol *render;
+extern t_symbol *reset;
 void gl_win_setup(void);
 void gl_shader_setup(void);
 void gl_vertexarray_setup(void);
 void gl_uniform_setup(void);
 void gl_uniform_matrix_setup(void);
 void gl_viewport_setup(void);
+void gl_scissor_setup(void);
 void gl_draw_setup(void);
 void gl_clear_setup(void);
+void gl_test_setup(void);
 
 
 #endif

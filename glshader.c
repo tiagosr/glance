@@ -81,6 +81,7 @@ static void glshader_load(glshader_obj *obj, t_symbol *sym, int argc, t_atom *ar
             SETFLOAT(compiled_atoms+1, shader);
             outlet_list(obj->info_out, &s_list, 2, compiled_atoms);
         } else {
+            error("shaders were not compiled");
             
         }
     }
@@ -94,7 +95,7 @@ static void glshader_link(glshader_obj *obj) {
         SETFLOAT(linked_atoms+1, obj->program);
         outlet_list(obj->data_out, &s_list, 2, linked_atoms);
     } else {
-        
+        error("fail on shader linkage");
     }
 }
 

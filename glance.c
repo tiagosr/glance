@@ -36,6 +36,7 @@ static void * glance_new(void) {
 
 void glance_setup(void) {
     render = gensym("glance_render");
+    reset = gensym("glance_reset");
     
     // the glance object will be a configuration/messaging object, but right now
     // there's no functionality for it.
@@ -63,7 +64,9 @@ void glance_setup(void) {
     gl_uniform_setup();
     gl_uniform_matrix_setup();
     gl_viewport_setup();
+    gl_scissor_setup();
     gl_clear_setup();
+    gl_test_setup();
     
     // Show copyright info when setup is finished
     post("glance: OpenGL/windowing/input libraries for PD\n"

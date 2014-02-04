@@ -13,11 +13,11 @@
 #include "glance.h"
 
 #define VERSION_MAJOR 0
-#define VERSION_MINOR 3
+#define VERSION_MINOR 4
 
 static t_class *glance_class;
 
-t_symbol *render;
+t_symbol *render, *reset, *cleanup;
 
 typedef struct _glance_obj {
     t_object x_obj;
@@ -37,6 +37,7 @@ static void * glance_new(void) {
 void glance_setup(void) {
     render = gensym("glance_render");
     reset = gensym("glance_reset");
+    cleanup = gensym("glance_cleanup");
     
     // the glance object will be a configuration/messaging object, but right now
     // there's no functionality for it.
@@ -60,6 +61,7 @@ void glance_setup(void) {
     gl_win_setup();
     gl_shader_setup();
     gl_vertexarray_setup();
+    gl_array_buffer_setup();
     gl_draw_setup();
     gl_uniform_setup();
     gl_uniform_matrix_setup();

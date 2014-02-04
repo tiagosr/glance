@@ -153,11 +153,23 @@ static void gl_test_render(t_gl_test *obj, t_symbol *s, int argc, t_atom* argv) 
         gl_test_initialize(obj);
         obj->initialized = true;
     }
-    GLint current_program = 0;
+    GLint current_program = 0, current_array_binding = 0;
     glGetIntegerv(GL_CURRENT_PROGRAM, &current_program);
+    glGetIntegerv(GL_ARRAY_BUFFER_BINDING, &current_array_binding);
     glUseProgram(obj->testprogram);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, obj->vertexarraybuffer);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    
+    glBindBuffer(GL_ARRAY_BUFFER, obj->colorarraybuffer);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 0, 0);
+    
     glDrawArrays(GL_TRIANGLES, 0, 3);
+    
     glUseProgram(current_program);
+    glBindBuffer(GL_ARRAY_BUFFER, current_array_binding);
 }
 
 void gl_test_setup(void) {

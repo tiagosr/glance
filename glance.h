@@ -11,11 +11,11 @@
 
 #include "pdutils.h"
 
-extern t_symbol *render;
-extern t_symbol *reset;
+extern t_symbol *render, *reset, *cleanup;
 void gl_win_setup(void);
 void gl_shader_setup(void);
 void gl_vertexarray_setup(void);
+void gl_array_buffer_setup(void);
 void gl_uniform_setup(void);
 void gl_uniform_matrix_setup(void);
 void gl_viewport_setup(void);

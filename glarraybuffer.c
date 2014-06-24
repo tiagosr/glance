@@ -77,7 +77,7 @@ static void gl_array_buffer_refresh(t_gl_array_buffer_obj *obj) {
         GLsizeiptr size = garray_npoints(garray)*sizeof(float);
         if (obj->read) {
             if (size != obj->size) {
-                garray_resize(garray, obj->size);
+                garray_resize_long(garray, obj->size);
             }
             int isize = 0;
             garray_getfloatarray(garray, &isize, &obj->data);

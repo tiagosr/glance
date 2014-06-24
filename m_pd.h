@@ -9,8 +9,8 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 42
-#define PD_BUGFIX_VERSION 5
+#define PD_MINOR_VERSION 43
+#define PD_BUGFIX_VERSION 4
 #define PD_TEST_VERSION "extended"
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
@@ -25,13 +25,10 @@ extern "C" {
 #pragma warning( disable : 4305 )  /* uncast const double to float */
 #pragma warning( disable : 4244 )  /* uncast float/int conversion etc. */
 #pragma warning( disable : 4101 )  /* unused automatic variables */
-/* not using GNU C, __attribute__ means nothing */
-#  define  __attribute__(x)
 #endif /* _MSC_VER */
 
-
     /* the external storage class is "extern" in UNIX; in MSW it's ugly. */
-#ifdef MSW
+#ifdef _WIN32
 #ifdef PD_INTERNAL
 #define EXTERN __declspec(dllexport) extern
 #else
@@ -39,7 +36,7 @@ extern "C" {
 #endif /* PD_INTERNAL */
 #else
 #define EXTERN extern
-#endif /* MSW */
+#endif /* _WIN32 */
 
     /* and depending on the compiler, hidden data structures are
     declared differently: */
@@ -49,21 +46,61 @@ extern "C" {
 #define EXTERN_STRUCT extern struct
 #endif
 
+/* Define some attributes, specific to the compiler */
+#if defined(__GNUC__)
+#define ATTRIBUTE_FORMAT_PRINTF(a, b) __attribute__ ((format (printf, a, b)))
+#else
+#define ATTRIBUTE_FORMAT_PRINTF(a, b)
+#endif
 
 #if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
-#define MAXPDSTRING 1000        /* must be >= FILENAME_MAX */
+/* Microsoft Visual Studio is not C99, it does not provide stdint.h */
+#ifdef _MSC_VER
+typedef signed __int8     int8_t;
+typedef signed __int16    int16_t;
+typedef signed __int32    int32_t;
+typedef signed __int64    int64_t;
+typedef unsigned __int8   uint8_t;
+typedef unsigned __int16  uint16_t;
+typedef unsigned __int32  uint32_t;
+typedef unsigned __int64  uint64_t;
+#elif defined(IRIX)
+typedef long int32_t;  /* a data type that has 32 bits */
+#else
+# include <stdint.h>
+#endif
+
+/* for FILE, needed by sys_fopen() and sys_fclose() only */
+#include <stdio.h>
+
+#define MAXPDSTRING 1000        /* use this for anything you want */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
 
 /* signed and unsigned integer types the size of a pointer:  */
 #if !defined(PD_LONGINTTYPE)
 #define PD_LONGINTTYPE long
 #endif
-#if !defined(PD_FLOATTYPE)
-#define PD_FLOATTYPE float
+
+#if !defined(PD_FLOAT_PRECISION)
+  /* normally, our floats (t_float, t_sample,...) are 32bit */
+# define PD_FLOAT_PRECISION 32
 #endif
+
+#if PD_FLOAT_PRECISION == 32
+# define PD_FLOATTYPE float
+/* an unsigned int of the same size as FLOATTYPE: */
+# define PD_FLOATUINTTYPE unsigned int
+
+#elif PD_FLOAT_PRECISION == 64
+# define PD_FLOATTYPE double
+# define PD_FLOATUINTTYPE unsigned long
+#else
+# error invalid FLOATSIZE: must be 32 or 64
+#endif
+
 typedef PD_LONGINTTYPE t_int;       /* pointer-size integer */
 typedef PD_FLOATTYPE t_float;       /* a float type at most the same size */
 typedef PD_FLOATTYPE t_floatarg;    /* float type for function calls */
@@ -472,10 +509,12 @@ EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
 EXTERN void postatom(int argc, t_atom *argv);
 EXTERN void endpost(void);
-EXTERN void error(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
-EXTERN void verbose(int level, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
-EXTERN void bug(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
-EXTERN void pd_error(void *object, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
+EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
+EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
+EXTERN void pd_error(void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
+EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
+    ATTRIBUTE_FORMAT_PRINTF(3, 4);
 EXTERN void sys_logerror(const char *object, const char *s);
 EXTERN void sys_unixerror(const char *object);
 EXTERN void sys_ouch(void);
@@ -486,12 +525,20 @@ EXTERN int sys_isreadablefile(const char *name);
 EXTERN int sys_isabsolutepath(const char *dir);
 EXTERN void sys_bashfilename(const char *from, char *to);
 EXTERN void sys_unbashfilename(const char *from, char *to);
-EXTERN int open_via_path(const char *name, const char *ext, const char *dir,
+EXTERN int open_via_path(const char *dir, const char *name, const char *ext,
     char *dirresult, char **nameresult, unsigned int size, int bin);
 EXTERN int sched_geteventno(void);
 EXTERN double sys_getrealtime(void);
 EXTERN int (*sys_idlehook)(void);   /* hook to add idle time computation */
 
+/* Win32's open()/fopen() do not handle UTF-8 filenames so we need
+ * these internal versions that handle UTF-8 filenames the same across
+ * all platforms.  They are recommended for use in external
+ * objectclasses as well so they work with Unicode filenames on Windows */
+EXTERN int sys_open(const char *path, int oflag, ...);
+EXTERN int sys_close(int fd);
+EXTERN FILE *sys_fopen(const char *filename, const char *mode);
+EXTERN int sys_fclose(FILE *stream);
 
 /* ------------  threading ------------------- */ 
 EXTERN void sys_lock(void);
@@ -502,6 +549,10 @@ EXTERN int sys_trylock(void);
 /* --------------- signals ----------------------------------- */
 
 typedef PD_FLOATTYPE t_sample;
+typedef union _sampleint_union {
+  t_sample f;
+  PD_FLOATUINTTYPE i;
+} t_sampleint_union;
 #define MAXLOGSIG 32
 #define MAXSIGSIZE (1 << MAXLOGSIG)
 
@@ -602,11 +653,11 @@ EXTERN_STRUCT _garray;
 EXTERN t_class *garray_class;
 EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec);
 EXTERN int garray_getfloatwords(t_garray *x, int *size, t_word **vec);
-EXTERN t_float garray_get(t_garray *x, t_symbol *s, t_int indx);
 EXTERN void garray_redraw(t_garray *x);
 EXTERN int garray_npoints(t_garray *x);
 EXTERN char *garray_vec(t_garray *x);
-EXTERN void garray_resize(t_garray *x, t_floatarg f);
+EXTERN void garray_resize(t_garray *x, t_floatarg f);  /* avoid; use this: */
+EXTERN void garray_resize_long(t_garray *x, long n);   /* better version */
 EXTERN void garray_usedindsp(t_garray *x);
 EXTERN void garray_setsaveit(t_garray *x, int saveit);
 EXTERN t_class *scalar_class;
@@ -654,14 +705,26 @@ defined, there is a "te_xpix" field in objects, not a "te_xpos" as before: */
 
 #if defined(__i386__) || defined(__x86_64__)
 /* a test for NANs and denormals.  Should only be necessary on i386. */
-#define PD_BADFLOAT(f) ((((*(unsigned int*)&(f))&0x7f800000)==0) || \
-    (((*(unsigned int*)&(f))&0x7f800000)==0x7f800000))
+# if PD_FLOAT_PRECISION == 32
+static inline int PD_BADFLOAT(t_sample f) {
+  t_sampleint_union u;
+  u.f=f;
+  return ((u.i & 0x7f800000)==0) || ((u.i&0x7f800000)==0x7f800000);
+}
 /* more stringent test: anything not between 1e-19 and 1e19 in absolute val */
-#define PD_BIGORSMALL(f) ((((*(unsigned int*)&(f))&0x60000000)==0) || \
-    (((*(unsigned int*)&(f))&0x60000000)==0x60000000))
+static inline int PD_BIGORSMALL(t_sample f) {
+  t_sampleint_union u;
+  u.f=f;
+  return ((u.i & 0x60000000)==0) || ((u.i & 0x60000000)==0x60000000);
+}
+# else
+#  warning 64bit mode: BIGORSMALL not implemented yet
+#  define PD_BADFLOAT(f) 0
+#  define PD_BIGORSMALL(f) 0
+# endif
 #else
-#define PD_BADFLOAT(f) 0
-#define PD_BIGORSMALL(f) 0
+# define PD_BADFLOAT(f) 0
+# define PD_BIGORSMALL(f) 0
 #endif
 
     /* get version number at run time */

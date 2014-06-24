@@ -1,4 +1,4 @@
-#N canvas 402 213 450 300 10;
+#N canvas 402 213 627 399 10;
 #X obj 51 126 gl.win;
 #X obj 225 108 gl.clear DEPTH COLOR;
 #X obj 225 87 gl.head;
@@ -7,15 +7,24 @@
 #X msg 21 100 create \, 1;
 #X msg 85 99 0 \, destroy;
 #X obj 58 74 sel 1 0;
-#X obj 225 202 gl.drawarrays TRIANGLE_STRIP 0 4;
+#X obj 225 326 gl.drawarrays TRIANGLE_STRIP 0 4;
 #X msg 358 51 set 0 -0.5 -0.5 0 -0.5 0.5 0 0.5 -0.5 0 0.5 0.5 0;
-#X obj 225 169 gl.vertexarray STATIC_DRAW 0 3 4;
-#X connect 1 0 9 0;
+#X obj 225 293 gl.vertexarray 0 3 4;
+#X obj 225 263 gl.arraybuffer bufferdata STATIC_DRAW;
+#N canvas 0 22 450 278 (subpatch) 0;
+#X array bufferdata 100 float 3;
+#A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+0;
+#X coords 0 1 99 -1 200 140 1;
+#X restore 4 216 graph;
+#X connect 1 0 10 0;
 #X connect 2 0 1 0;
 #X connect 3 0 6 0;
 #X connect 4 0 0 0;
 #X connect 5 0 0 0;
 #X connect 6 0 4 0;
 #X connect 6 1 5 0;
-#X connect 8 0 9 0;
 #X connect 9 0 7 0;
+#X connect 10 0 9 0;

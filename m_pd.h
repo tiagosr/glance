@@ -9,9 +9,9 @@ extern "C" {
 #endif
 
 #define PD_MAJOR_VERSION 0
-#define PD_MINOR_VERSION 43
-#define PD_BUGFIX_VERSION 2
-#define PD_TEST_VERSION ""
+#define PD_MINOR_VERSION 42
+#define PD_BUGFIX_VERSION 5
+#define PD_TEST_VERSION "extended"
 
 /* old name for "MSW" flag -- we have to take it for the sake of many old
 "nmakefiles" for externs, which will define NT and not MSW */
@@ -25,10 +25,13 @@ extern "C" {
 #pragma warning( disable : 4305 )  /* uncast const double to float */
 #pragma warning( disable : 4244 )  /* uncast float/int conversion etc. */
 #pragma warning( disable : 4101 )  /* unused automatic variables */
+/* not using GNU C, __attribute__ means nothing */
+#  define  __attribute__(x)
 #endif /* _MSC_VER */
 
+
     /* the external storage class is "extern" in UNIX; in MSW it's ugly. */
-#ifdef _WIN32
+#ifdef MSW
 #ifdef PD_INTERNAL
 #define EXTERN __declspec(dllexport) extern
 #else
@@ -36,7 +39,7 @@ extern "C" {
 #endif /* PD_INTERNAL */
 #else
 #define EXTERN extern
-#endif /* _WIN32 */
+#endif /* MSW */
 
     /* and depending on the compiler, hidden data structures are
     declared differently: */
@@ -46,18 +49,12 @@ extern "C" {
 #define EXTERN_STRUCT extern struct
 #endif
 
-/* Define some attributes, specific to the compiler */
-#if defined(__GNUC__)
-#define ATTRIBUTE_FORMAT_PRINTF(a, b) __attribute__ ((format (printf, a, b)))
-#else
-#define ATTRIBUTE_FORMAT_PRINTF(a, b)
-#endif
 
 #if !defined(_SIZE_T) && !defined(_SIZE_T_)
 #include <stddef.h>     /* just for size_t -- how lame! */
 #endif
 
-#define MAXPDSTRING 1000        /* use this for anything you want */
+#define MAXPDSTRING 1000        /* must be >= FILENAME_MAX */
 #define MAXPDARG 5              /* max number of args we can typecheck today */
 
 /* signed and unsigned integer types the size of a pointer:  */
@@ -112,6 +109,16 @@ typedef struct _gpointer           /* pointer to a gobj in a glist */
     t_gstub *gp_stub;               /* stub which points to glist/array */
 } t_gpointer;
 
+#define PD_BLOBS 1 /* MP20070211 Use this to test for blob capability */
+/* MP20061223 blob type: */
+typedef struct _blob /* pointer to a blob */
+{
+   unsigned long s_length; /* length of blob in bytes */
+   unsigned char *s_data; /* pointer to 1st byte of blob */
+} t_blob;
+/* ...MP20061223 blob type */
+
+
 typedef union word
 {
     t_float w_float;
@@ -120,6 +127,7 @@ typedef union word
     t_array *w_array;
     struct _glist *w_list;
     int w_index;
+    t_blob *w_blob; /* MP20061223 blob type */
 } t_word;
 
 typedef enum
@@ -135,7 +143,8 @@ typedef enum
     A_DOLLAR, 
     A_DOLLSYM,
     A_GIMME,
-    A_CANT
+    A_CANT,
+    A_BLOB /* MP20061223 blob type */
 }  t_atomtype;
 
 #define A_DEFSYMBOL A_DEFSYM    /* better name for this */
@@ -222,6 +231,7 @@ EXTERN t_pd pd_canvasmaker;     /* factory for creating canvases */
 EXTERN t_symbol s_pointer;
 EXTERN t_symbol s_float;
 EXTERN t_symbol s_symbol;
+EXTERN t_symbol s_blob;
 EXTERN t_symbol s_bang;
 EXTERN t_symbol s_list;
 EXTERN t_symbol s_anything;
@@ -265,6 +275,7 @@ EXTERN void *resizebytes(void *x, size_t oldsize, size_t newsize);
 #define SETFLOAT(atom, f) ((atom)->a_type = A_FLOAT, (atom)->a_w.w_float = (f))
 #define SETSYMBOL(atom, s) ((atom)->a_type = A_SYMBOL, \
     (atom)->a_w.w_symbol = (s))
+#define SETBLOB(atom, st) ((atom)->a_type = A_BLOB, (atom)->a_w.w_blob = (st)) /* MP 20061226 blob type */
 #define SETDOLLAR(atom, n) ((atom)->a_type = A_DOLLAR, \
     (atom)->a_w.w_index = (n))
 #define SETDOLLSYM(atom, s) ((atom)->a_type = A_DOLLSYM, \
@@ -273,6 +284,7 @@ EXTERN void *resizebytes(void *x, size_t oldsize, size_t newsize);
 EXTERN t_float atom_getfloat(t_atom *a);
 EXTERN t_int atom_getint(t_atom *a);
 EXTERN t_symbol *atom_getsymbol(t_atom *a);
+EXTERN t_blob *atom_getblob(t_atom *a);/* MP 20070108 blob type */
 EXTERN t_symbol *atom_gensym(t_atom *a);
 EXTERN t_float atom_getfloatarg(int which, int argc, t_atom *argv);
 EXTERN t_int atom_getintarg(int which, int argc, t_atom *argv);
@@ -336,6 +348,7 @@ EXTERN void pd_bang(t_pd *x);
 EXTERN void pd_pointer(t_pd *x, t_gpointer *gp);
 EXTERN void pd_float(t_pd *x, t_float f);
 EXTERN void pd_symbol(t_pd *x, t_symbol *s);
+EXTERN void pd_blob(t_pd *x, t_blob *st); /* MP 20061226 blob type */
 EXTERN void pd_list(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 EXTERN void pd_anything(t_pd *x, t_symbol *s, int argc, t_atom *argv);
 #define pd_class(x) (*(x))
@@ -360,6 +373,7 @@ EXTERN void outlet_bang(t_outlet *x);
 EXTERN void outlet_pointer(t_outlet *x, t_gpointer *gp);
 EXTERN void outlet_float(t_outlet *x, t_float f);
 EXTERN void outlet_symbol(t_outlet *x, t_symbol *s);
+EXTERN void outlet_blob(t_outlet *x, t_blob *st); /* MP 20061226 blob type */
 EXTERN void outlet_list(t_outlet *x, t_symbol *s, int argc, t_atom *argv);
 EXTERN void outlet_anything(t_outlet *x, t_symbol *s, int argc, t_atom *argv);
 EXTERN t_symbol *outlet_getsymbol(t_outlet *x);
@@ -416,6 +430,7 @@ EXTERN void class_addbang(t_class *c, t_method fn);
 EXTERN void class_addpointer(t_class *c, t_method fn);
 EXTERN void class_doaddfloat(t_class *c, t_method fn);
 EXTERN void class_addsymbol(t_class *c, t_method fn);
+EXTERN void class_addblob(t_class *c, t_method fn);/* MP 20061226 blob type */
 EXTERN void class_addlist(t_class *c, t_method fn);
 EXTERN void class_addanything(t_class *c, t_method fn);
 EXTERN void class_sethelpsymbol(t_class *c, t_symbol *s);
@@ -445,6 +460,7 @@ EXTERN t_propertiesfn class_getpropertiesfn(t_class *c);
 #define class_addpointer(x, y) class_addpointer((x), (t_method)(y))
 #define class_addfloat(x, y) class_doaddfloat((x), (t_method)(y))
 #define class_addsymbol(x, y) class_addsymbol((x), (t_method)(y))
+#define class_addblob(x, y) class_addblob((x), (t_method)(y)) /* MP20061226 blob type */
 #define class_addlist(x, y) class_addlist((x), (t_method)(y))
 #define class_addanything(x, y) class_addanything((x), (t_method)(y))
 #endif
@@ -456,12 +472,10 @@ EXTERN void poststring(const char *s);
 EXTERN void postfloat(t_floatarg f);
 EXTERN void postatom(int argc, t_atom *argv);
 EXTERN void endpost(void);
-EXTERN void error(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
-EXTERN void verbose(int level, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
-EXTERN void bug(const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(1, 2);
-EXTERN void pd_error(void *object, const char *fmt, ...) ATTRIBUTE_FORMAT_PRINTF(2, 3);
-EXTERN void logpost(const void *object, const int level, const char *fmt, ...)
-    ATTRIBUTE_FORMAT_PRINTF(3, 4);
+EXTERN void error(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+EXTERN void verbose(int level, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
+EXTERN void bug(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));
+EXTERN void pd_error(void *object, const char *fmt, ...) __attribute__ ((format (printf, 2, 3)));
 EXTERN void sys_logerror(const char *object, const char *s);
 EXTERN void sys_unixerror(const char *object);
 EXTERN void sys_ouch(void);
@@ -474,7 +488,6 @@ EXTERN void sys_bashfilename(const char *from, char *to);
 EXTERN void sys_unbashfilename(const char *from, char *to);
 EXTERN int open_via_path(const char *name, const char *ext, const char *dir,
     char *dirresult, char **nameresult, unsigned int size, int bin);
-EXTERN int sys_close(int fd);
 EXTERN int sched_geteventno(void);
 EXTERN double sys_getrealtime(void);
 EXTERN int (*sys_idlehook)(void);   /* hook to add idle time computation */
@@ -589,11 +602,11 @@ EXTERN_STRUCT _garray;
 EXTERN t_class *garray_class;
 EXTERN int garray_getfloatarray(t_garray *x, int *size, t_float **vec);
 EXTERN int garray_getfloatwords(t_garray *x, int *size, t_word **vec);
+EXTERN t_float garray_get(t_garray *x, t_symbol *s, t_int indx);
 EXTERN void garray_redraw(t_garray *x);
 EXTERN int garray_npoints(t_garray *x);
 EXTERN char *garray_vec(t_garray *x);
-EXTERN void garray_resize(t_garray *x, t_floatarg f);  /* avoid; use this: */
-EXTERN void garray_resize_long(t_garray *x, long n);   /* better version */
+EXTERN void garray_resize(t_garray *x, t_floatarg f);
 EXTERN void garray_usedindsp(t_garray *x);
 EXTERN void garray_setsaveit(t_garray *x, int saveit);
 EXTERN t_class *scalar_class;

@@ -10,7 +10,7 @@
 #X obj 225 326 gl.drawarrays TRIANGLE_STRIP 0 4;
 #X msg 358 51 set 0 -0.5 -0.5 0 -0.5 0.5 0 0.5 -0.5 0 0.5 0.5 0;
 #X obj 225 198 gl.vertexarray 0 3 4;
-#X obj 225 168 gl.arraybuffer bufferdata STATIC_DRAW;
+#X obj 224 283 gl.arraybuffer bufferdata STATIC_DRAW;
 #N canvas 0 22 450 278 (subpatch) 0;
 #X array bufferdata 100 float 3;
 #A 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
@@ -20,16 +20,16 @@
 #X coords 0 1 99 -1 200 140 1;
 #X restore 4 216 graph;
 #X obj 247 238 gl.error;
-#X obj 300 283 print;
+#X obj 297 262 print;
 #X obj 407 108 gl.info;
-#X obj 371 290 PRINT;
-#X obj 403 261 PRINT;
-#X obj 443 229 PRINT;
-#X obj 481 190 PRINT;
-#X obj 502 164 PRINT;
+#X obj 462 317 PRINT;
+#X obj 470 292 PRINT;
+#X obj 481 266 PRINT;
+#X obj 504 206 PRINT;
 #X obj 354 74 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
 -1;
-#X connect 1 0 10 0;
+#X obj 496 236 print GL_EXTENSIONS;
+#X connect 1 0 9 0;
 #X connect 2 0 1 0;
 #X connect 3 0 6 0;
 #X connect 4 0 0 0;
@@ -37,11 +37,10 @@
 #X connect 6 0 4 0;
 #X connect 6 1 5 0;
 #X connect 9 0 12 0;
-#X connect 10 0 9 0;
 #X connect 12 1 13 0;
 #X connect 14 0 15 0;
 #X connect 14 1 16 0;
 #X connect 14 2 17 0;
-#X connect 14 3 18 0;
-#X connect 14 4 19 0;
-#X connect 20 0 14 0;
+#X connect 14 3 20 0;
+#X connect 14 4 18 0;
+#X connect 19 0 14 0;

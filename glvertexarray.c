@@ -42,30 +42,24 @@ static void *gl_vertexarray_new(t_float position, t_float components, t_float fl
     obj->out = outlet_new(&obj->x_obj, &s_anything);
     return (void *)obj;
 }
-
+#define GLWRAP(x) {GLenum err; x; while((err = glGetError())!=GL_NO_ERROR){ post("" #x  " -> error %d on line %d", err, __LINE__); } };
 static void gl_vertexarray_init(t_gl_vertexarray_obj *obj) {
-    GLenum err;
-    glGenVertexArrays(1, &obj->vertexarray);
-    while ((err = glGetError())!= GL_NO_ERROR) {
-        post("error %d on line %d", err, __LINE__);
-    }
-    int prevboundvtxarray = 0, prevboundvtxattribenabled = 0;
+    GLWRAP(glGenVertexArrays(1, &obj->vertexarray))
+    //int prevboundvtxarray = 0, prevboundvtxattribenabled = 0;
     //glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevboundvtxarray);
     //glGetVertexAttribiv(obj->attribindex, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &prevboundvtxattribenabled);
+    {GLenum err;
     glBindVertexArray(obj->vertexarray);
     while ((err = glGetError())!= GL_NO_ERROR) {
         post("error %d on line %d: vertexarray=%d", err, __LINE__, obj->vertexarray);
     }
-    glEnableVertexAttribArray(obj->attribindex);
-    while ((err = glGetError())!= GL_NO_ERROR) {
-        post("error %d on line %d", err, __LINE__);
     }
+    GLWRAP(glEnableVertexAttribArray(obj->attribindex));
+    GLWRAP(
     glVertexAttribPointer(obj->attribindex,
                           obj->size, obj->type, obj->normalized,
-                          obj->stride, 0);
-    while ((err = glGetError())!= GL_NO_ERROR) {
-        post("error %d on line %d", err, __LINE__);
-    }
+                          obj->stride, 0)
+           );
     /*
     if (!prevboundvtxattribenabled) {
         glDisableVertexAttribArray(obj->attribindex);
@@ -87,7 +81,6 @@ static void gl_vertexarray_destroy(t_gl_vertexarray_obj *obj) {
 
 static void gl_vertexarray_render(t_gl_vertexarray_obj *obj,
                                   t_symbol *s, int argc, t_atom *argv) {
-    GLenum err;
     if (!obj->init) {
         gl_vertexarray_init(obj);
     }
@@ -95,20 +88,11 @@ static void gl_vertexarray_render(t_gl_vertexarray_obj *obj,
     GLint prevvtxattribindexenabled = 0;
     glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevboundvtxarray);
     glGetVertexAttribiv(obj->attribindex, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &prevvtxattribindexenabled);
-    glEnableVertexAttribArray(obj->attribindex);
-    while ((err = glGetError())!= GL_NO_ERROR) {
-        post("error %d on line %d", err, __LINE__);
-    }
-    glBindVertexArray(obj->vertexarray);
-    while ((err = glGetError())!= GL_NO_ERROR) {
-        post("error %d on line %d", err, __LINE__);
-    }
-    glVertexAttribPointer(obj->attribindex,
+    GLWRAP(glEnableVertexAttribArray(obj->attribindex));
+    GLWRAP(glBindVertexArray(obj->vertexarray));
+    GLWRAP(glVertexAttribPointer(obj->attribindex,
                           obj->size, obj->type, obj->normalized,
-                          obj->stride, 0);
-    while ((err = glGetError())!= GL_NO_ERROR) {
-        post("error %d on line %d", err, __LINE__);
-    }
+                          obj->stride, 0));
     /* */
     outlet_anything(obj->out, s, argc, argv);
     

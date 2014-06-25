@@ -21,6 +21,8 @@
 		B124B8A316F5158B00B15E26 /* gldraw.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A216F5158B00B15E26 /* gldraw.c */; };
 		B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A416F536E900B15E26 /* glvertexarray.c */; };
 		B124B8A716F536F500B15E26 /* gluniform.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A616F536F500B15E26 /* gluniform.c */; };
+		B12831FF195A6CCC00646706 /* glerror.c in Sources */ = {isa = PBXBuildFile; fileRef = B12831FE195A6CCC00646706 /* glerror.c */; };
+		B1283201195A93B300646706 /* glinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = B1283200195A93B300646706 /* glinfo.c */; };
 		B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18216F6BEE4007BF78F /* glviewport.c */; };
 		B12BA18B16F7AF90007BF78F /* gluniformmatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */; };
 		B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18C16F7D39C007BF78F /* gltexture.c */; };
@@ -54,6 +56,8 @@
 		B124B8A216F5158B00B15E26 /* gldraw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gldraw.c; sourceTree = "<group>"; };
 		B124B8A416F536E900B15E26 /* glvertexarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glvertexarray.c; sourceTree = "<group>"; };
 		B124B8A616F536F500B15E26 /* gluniform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniform.c; sourceTree = "<group>"; };
+		B12831FE195A6CCC00646706 /* glerror.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glerror.c; sourceTree = "<group>"; };
+		B1283200195A93B300646706 /* glinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glinfo.c; sourceTree = "<group>"; };
 		B12BA18216F6BEE4007BF78F /* glviewport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glviewport.c; sourceTree = "<group>"; };
 		B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniformmatrix.c; sourceTree = "<group>"; };
 		B12BA18C16F7D39C007BF78F /* gltexture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gltexture.c; sourceTree = "<group>"; };
@@ -120,9 +124,11 @@
 		B1EFDA4516E6C63000CB436E = {
 			isa = PBXGroup;
 			children = (
+				B12831FE195A6CCC00646706 /* glerror.c */,
 				B1EFDABE16E6E7A300CB436E /* glance.c */,
 				B15C055616EE8CA000DD7B28 /* glance.h */,
 				B1A86B97187DBAA000469398 /* gltest.c */,
+				B1283200195A93B300646706 /* glinfo.c */,
 				B1EFDADD16E815B400CB436E /* window.c */,
 				B15C055316EDC35D00DD7B28 /* pdutils.h */,
 				B15C055416EDC3D900DD7B28 /* pdutils.c */,
@@ -228,7 +234,9 @@
 				B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */,
 				B124B8A316F5158B00B15E26 /* gldraw.c in Sources */,
 				B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */,
+				B12831FF195A6CCC00646706 /* glerror.c in Sources */,
 				B124B8A716F536F500B15E26 /* gluniform.c in Sources */,
+				B1283201195A93B300646706 /* glinfo.c in Sources */,
 				B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */,
 				B12BA18B16F7AF90007BF78F /* gluniformmatrix.c in Sources */,
 				B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */,

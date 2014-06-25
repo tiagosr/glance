@@ -23,6 +23,8 @@ void gl_scissor_setup(void);
 void gl_draw_setup(void);
 void gl_clear_setup(void);
 void gl_test_setup(void);
+void gl_error_setup(void);
+void gl_info_setup(void);
 
 
 #endif

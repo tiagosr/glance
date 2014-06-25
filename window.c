@@ -409,6 +409,21 @@ static void gl_win_title(t_gl_win_obj *obj, t_symbol *sym, int argc, t_atom *arg
     glfwSetWindowTitle(obj->window->window, obj->title);
 }
 
+static void gl_win_post_info(t_gl_win_obj *obj) {
+    if (obj->window->window <= 0) {
+        if (obj->window->name == default_window) {
+            post("no window was created for the default gl_win object\n");
+        } else {
+            post("no window was created for the \"$s\" gl_win object\n",
+                 obj->window->name->s_name);
+        }
+    } else {
+        int major = glfwGetWindowAttrib(obj->window->window, GLFW_CONTEXT_VERSION_MAJOR);
+        int minor = glfwGetWindowAttrib(obj->window->window, GLFW_CONTEXT_VERSION_MINOR);
+        post("GLFW info for window %s: major %d, minor %d", obj->window->name, major, minor);
+    }
+}
+
 static void gl_win_dimen(t_gl_win_obj *obj, float width, float height) {
     obj->width = width;
     obj->height = height;
@@ -530,6 +545,8 @@ void gl_win_setup(void) {
                     gensym("dimen"), A_FLOAT, A_FLOAT, 0);
     class_addmethod(gl_win_class, (t_method)gl_win_destroy,
                     gensym("destroy"), 0);
+    class_addmethod(gl_win_class, (t_method)gl_win_post_info,
+                    gensym("post-info"), 0);
     class_addmethod(gl_win_class, (t_method)gl_win_fullscreen,
                     gensym("fullscreen"), A_FLOAT, 0);
     class_addfloat(gl_win_class, (t_method)gl_win_render);

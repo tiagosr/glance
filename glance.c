@@ -32,6 +32,9 @@ static void * glance_new(void) {
     return (void *)obj;
 }
 
+static void glance_glfw_error_callback(int err_num, const char* err_msg) {
+    post("GLFW error(%d): %s", err_num, err_msg);
+}
 
 
 void glance_setup(void) {
@@ -49,13 +52,17 @@ void glance_setup(void) {
     class_addbang(glance_class, glance_bang);
     
 
+    glfwSetErrorCallback((GLFWerrorfun)glance_glfw_error_callback);
+    int result = glfwInit();
+    if (result != GL_TRUE) {
+        post("GLFW failed to init");
+    }
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     
     glfwWindowHint(GLFW_DEPTH_BITS, 24);
-    glfwInit();
     
     // Setting up Pd object classes
     gl_win_setup();
@@ -68,6 +75,8 @@ void glance_setup(void) {
     gl_viewport_setup();
     gl_scissor_setup();
     gl_clear_setup();
+    gl_error_setup();
+    gl_info_setup();
     gl_test_setup();
     
     // Show copyright info when setup is finished

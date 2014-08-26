@@ -37,6 +37,14 @@ static t_sym_uint_list gl_types[] = {
     {"UNSIGNED_SHORT", GL_UNSIGNED_SHORT},
     {"INT", GL_INT},
     {"UNSIGNED_INT", GL_UNSIGNED_INT},
+    {"float", GL_FLOAT},
+    {"double", GL_DOUBLE},
+    {"byte", GL_BYTE},
+    {"unsigned_byte", GL_UNSIGNED_BYTE},
+    {"short", GL_SHORT},
+    {"unsigned_short", GL_UNSIGNED_SHORT},
+    {"int", GL_INT},
+    {"unsigned_int", GL_UNSIGNED_INT},
     {0,0}
 };
 

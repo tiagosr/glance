@@ -85,6 +85,11 @@ static void gl_clear_render(t_gl_clear_obj *obj,
     outlet_anything(obj->out, s, argc, argv);
 }
 
+static void gl_clear_reset(t_gl_clear_obj *obj)
+{
+    outlet_anything(obj->out, reset, 0, NULL);
+}
+
 void gl_clear_setup(void) {
     gl_clear_class = class_new(gensym("gl.clear"),
                                (t_newmethod)gl_clear_new,
@@ -92,6 +97,7 @@ void gl_clear_setup(void) {
                                sizeof(t_gl_clear_obj), CLASS_DEFAULT,
                                A_GIMME, 0);
     class_addmethod(gl_clear_class, (t_method)gl_clear_render, render, A_GIMME, 0);
+    class_addmethod(gl_clear_class, (t_method)gl_clear_reset, reset, A_NULL, 0);
     class_addmethod(gl_clear_class, (t_method)gl_clear_color,
                     gensym("color"), A_FLOAT, A_FLOAT, A_FLOAT, 0);
     class_addmethod(gl_clear_class, (t_method)gl_clear_depth,

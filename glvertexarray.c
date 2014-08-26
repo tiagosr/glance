@@ -60,14 +60,6 @@ static void gl_vertexarray_init(t_gl_vertexarray_obj *obj) {
                           obj->size, obj->type, obj->normalized,
                           obj->stride, 0)
            );
-    /*
-    if (!prevboundvtxattribenabled) {
-        glDisableVertexAttribArray(obj->attribindex);
-    }
-    while ((err = glGetError())!= GL_NO_ERROR) {
-        post("error %d on line %d", err, __LINE__);
-    }*/
-    //glBindVertexArray(prevboundvtxarray);
     obj->init = true;
 }
 
@@ -81,25 +73,22 @@ static void gl_vertexarray_destroy(t_gl_vertexarray_obj *obj) {
 
 static void gl_vertexarray_render(t_gl_vertexarray_obj *obj,
                                   t_symbol *s, int argc, t_atom *argv) {
+    /*
     if (!obj->init) {
         gl_vertexarray_init(obj);
     }
-    GLint prevboundvtxarray = 0;
-    GLint prevvtxattribindexenabled = 0;
-    glGetIntegerv(GL_VERTEX_ARRAY_BINDING, &prevboundvtxarray);
-    glGetVertexAttribiv(obj->attribindex, GL_VERTEX_ATTRIB_ARRAY_ENABLED, &prevvtxattribindexenabled);
+    */
     GLWRAP(glEnableVertexAttribArray(obj->attribindex));
+    /*
     GLWRAP(glBindVertexArray(obj->vertexarray));
     GLWRAP(glVertexAttribPointer(obj->attribindex,
                           obj->size, obj->type, obj->normalized,
                           obj->stride, 0));
-    /* */
+     
+    // */
     outlet_anything(obj->out, s, argc, argv);
     
-    glBindVertexArray(prevboundvtxarray);
-    if (!prevvtxattribindexenabled) {
-        glDisableVertexAttribArray(obj->attribindex);
-    }
+    glDisableVertexAttribArray(obj->attribindex);
 }
 
 static void gl_vertexarray_setattribloc(t_gl_vertexarray_obj *obj, t_float loc) {
@@ -117,7 +106,8 @@ void gl_vertexarray_setup(void) {
                                      (t_newmethod)gl_vertexarray_new, 0,
                                      sizeof(t_gl_vertexarray_obj),
                                      CLASS_DEFAULT, A_FLOAT, A_FLOAT, A_FLOAT, 0);
-    
+    class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_init, reset,
+                    A_NULL, 0);
     class_addmethod(gl_vertexarray_class, (t_method)gl_vertexarray_render,
                     render, A_GIMME, 0);
 }

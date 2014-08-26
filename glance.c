@@ -66,15 +66,12 @@ void glance_setup(void) {
     
     // Setting up Pd object classes
     gl_win_setup();
-    gl_shader_setup();
+    gl_sketch_setup();
+    gl_program_setup();
     gl_vertexarray_setup();
     gl_array_buffer_setup();
-    gl_draw_setup();
     gl_uniform_setup();
     gl_uniform_matrix_setup();
-    gl_viewport_setup();
-    gl_scissor_setup();
-    gl_clear_setup();
     gl_error_setup();
     gl_info_setup();
     gl_test_setup();

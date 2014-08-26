@@ -18,29 +18,27 @@
 		149A3E5F16E7ECD0008911FD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */; };
 		149A3E6116E7ECE1008911FD /* Carbon.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149A3E6016E7ECE1008911FD /* Carbon.framework */; };
 		149A3E6316E7ECF0008911FD /* ForceFeedback.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 149A3E6216E7ECF0008911FD /* ForceFeedback.framework */; };
-		B124B8A316F5158B00B15E26 /* gldraw.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A216F5158B00B15E26 /* gldraw.c */; };
 		B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A416F536E900B15E26 /* glvertexarray.c */; };
 		B124B8A716F536F500B15E26 /* gluniform.c in Sources */ = {isa = PBXBuildFile; fileRef = B124B8A616F536F500B15E26 /* gluniform.c */; };
 		B12831FF195A6CCC00646706 /* glerror.c in Sources */ = {isa = PBXBuildFile; fileRef = B12831FE195A6CCC00646706 /* glerror.c */; };
 		B1283201195A93B300646706 /* glinfo.c in Sources */ = {isa = PBXBuildFile; fileRef = B1283200195A93B300646706 /* glinfo.c */; };
 		B1283203195B0E1100646706 /* glvertexattrib.c in Sources */ = {isa = PBXBuildFile; fileRef = B1283202195B0E1100646706 /* glvertexattrib.c */; };
-		B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18216F6BEE4007BF78F /* glviewport.c */; };
-		B12BA18B16F7AF90007BF78F /* gluniformmatrix.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */; };
-		B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18C16F7D39C007BF78F /* gltexture.c */; };
-		B12BA1AA16F8F515007BF78F /* glclear.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA1A916F8F515007BF78F /* glclear.c */; };
+		B12BA18B16F7AF90007BF78F /* gluniformmatrix.cc in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18A16F7AF90007BF78F /* gluniformmatrix.cc */; };
+		B12BA18D16F7D39C007BF78F /* gltexture.cc in Sources */ = {isa = PBXBuildFile; fileRef = B12BA18C16F7D39C007BF78F /* gltexture.cc */; };
 		B12BA1AD16F9375C007BF78F /* libfreeimage-3.15.4.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */; };
-		B12BA1B616FAC2C5007BF78F /* glenable.c in Sources */ = {isa = PBXBuildFile; fileRef = B12BA1B516FAC2C4007BF78F /* glenable.c */; };
+		B134C9BF196EB3B40033B214 /* glsketch.cc in Sources */ = {isa = PBXBuildFile; fileRef = B134C9BE196EB3B40033B214 /* glsketch.cc */; };
 		B1433CBC180B850F0043325A /* libglfw3.3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B1433CBB180B850F0043325A /* libglfw3.3.0.dylib */; };
 		B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */ = {isa = PBXBuildFile; fileRef = B15C055416EDC3D900DD7B28 /* pdutils.c */; };
+		B15C70A41982F3690019358A /* pdcpputils.cc in Sources */ = {isa = PBXBuildFile; fileRef = B15C70A21982F3690019358A /* pdcpputils.cc */; };
+		B15C70A51982F3690019358A /* pdcpputils.hh in Headers */ = {isa = PBXBuildFile; fileRef = B15C70A31982F3690019358A /* pdcpputils.hh */; };
 		B15CE3FB16EA236300DD7B28 /* utarray.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F716EA236300DD7B28 /* utarray.h */; };
 		B15CE3FC16EA236300DD7B28 /* uthash.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F816EA236300DD7B28 /* uthash.h */; };
 		B15CE3FD16EA236300DD7B28 /* utlist.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3F916EA236300DD7B28 /* utlist.h */; };
 		B15CE3FE16EA236300DD7B28 /* utstring.h in Headers */ = {isa = PBXBuildFile; fileRef = B15CE3FA16EA236300DD7B28 /* utstring.h */; };
 		B1A86B98187DBAA000469398 /* gltest.c in Sources */ = {isa = PBXBuildFile; fileRef = B1A86B97187DBAA000469398 /* gltest.c */; };
-		B1A86BAD188AAE9A00469398 /* glscissor.c in Sources */ = {isa = PBXBuildFile; fileRef = B1A86BAC188AAE9A00469398 /* glscissor.c */; };
-		B1A86BAF188C87DB00469398 /* glarraybuffer.c in Sources */ = {isa = PBXBuildFile; fileRef = B1A86BAE188C87DB00469398 /* glarraybuffer.c */; };
-		B1EFDADE16E815B400CB436E /* window.c in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDADD16E815B400CB436E /* window.c */; };
-		B1EFDAE016E83BFC00CB436E /* glshader.c in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDADF16E83BFC00CB436E /* glshader.c */; };
+		B1A86BAF188C87DB00469398 /* glarraybuffer.cc in Sources */ = {isa = PBXBuildFile; fileRef = B1A86BAE188C87DB00469398 /* glarraybuffer.cc */; };
+		B1EFDADE16E815B400CB436E /* window.cc in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDADD16E815B400CB436E /* window.cc */; };
+		B1EFDAE016E83BFC00CB436E /* glprogram.cc in Sources */ = {isa = PBXBuildFile; fileRef = B1EFDADF16E83BFC00CB436E /* glprogram.cc */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,33 +52,32 @@
 		149A3E5E16E7ECD0008911FD /* CoreFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreFoundation.framework; path = /System/Library/Frameworks/CoreFoundation.framework; sourceTree = "<absolute>"; };
 		149A3E6016E7ECE1008911FD /* Carbon.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Carbon.framework; path = /System/Library/Frameworks/Carbon.framework; sourceTree = "<absolute>"; };
 		149A3E6216E7ECF0008911FD /* ForceFeedback.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ForceFeedback.framework; path = /System/Library/Frameworks/ForceFeedback.framework; sourceTree = "<absolute>"; };
-		B124B8A216F5158B00B15E26 /* gldraw.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gldraw.c; sourceTree = "<group>"; };
 		B124B8A416F536E900B15E26 /* glvertexarray.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glvertexarray.c; sourceTree = "<group>"; };
 		B124B8A616F536F500B15E26 /* gluniform.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniform.c; sourceTree = "<group>"; };
 		B12831FE195A6CCC00646706 /* glerror.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glerror.c; sourceTree = "<group>"; };
 		B1283200195A93B300646706 /* glinfo.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glinfo.c; sourceTree = "<group>"; };
 		B1283202195B0E1100646706 /* glvertexattrib.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glvertexattrib.c; sourceTree = "<group>"; };
-		B12BA18216F6BEE4007BF78F /* glviewport.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glviewport.c; sourceTree = "<group>"; };
-		B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gluniformmatrix.c; sourceTree = "<group>"; };
-		B12BA18C16F7D39C007BF78F /* gltexture.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gltexture.c; sourceTree = "<group>"; };
-		B12BA1A916F8F515007BF78F /* glclear.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glclear.c; sourceTree = "<group>"; };
+		B12BA18A16F7AF90007BF78F /* gluniformmatrix.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gluniformmatrix.cc; sourceTree = "<group>"; };
+		B12BA18C16F7D39C007BF78F /* gltexture.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = gltexture.cc; sourceTree = "<group>"; };
 		B12BA1AC16F9375C007BF78F /* libfreeimage-3.15.4.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = "libfreeimage-3.15.4.dylib"; path = "/usr/local/Cellar/freeimage/3.15.4/lib/libfreeimage-3.15.4.dylib"; sourceTree = "<absolute>"; };
-		B12BA1B516FAC2C4007BF78F /* glenable.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glenable.c; sourceTree = "<group>"; };
+		B134C9BE196EB3B40033B214 /* glsketch.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glsketch.cc; sourceTree = "<group>"; };
+		B134C9C1197EE5770033B214 /* window.hh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = window.hh; sourceTree = "<group>"; };
 		B1433CBB180B850F0043325A /* libglfw3.3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libglfw3.3.0.dylib; path = /usr/local/Cellar/glfw3/3.0.2/lib/libglfw3.3.0.dylib; sourceTree = "<absolute>"; };
 		B15C055316EDC35D00DD7B28 /* pdutils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = pdutils.h; sourceTree = "<group>"; };
 		B15C055416EDC3D900DD7B28 /* pdutils.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = pdutils.c; sourceTree = "<group>"; };
 		B15C055616EE8CA000DD7B28 /* glance.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glance.h; sourceTree = "<group>"; };
+		B15C70A21982F3690019358A /* pdcpputils.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = pdcpputils.cc; sourceTree = "<group>"; };
+		B15C70A31982F3690019358A /* pdcpputils.hh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; path = pdcpputils.hh; sourceTree = "<group>"; };
 		B15CE3F716EA236300DD7B28 /* utarray.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utarray.h; sourceTree = "<group>"; };
 		B15CE3F816EA236300DD7B28 /* uthash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uthash.h; sourceTree = "<group>"; };
 		B15CE3F916EA236300DD7B28 /* utlist.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utlist.h; sourceTree = "<group>"; };
 		B15CE3FA16EA236300DD7B28 /* utstring.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utstring.h; sourceTree = "<group>"; };
 		B1A86B97187DBAA000469398 /* gltest.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = gltest.c; sourceTree = "<group>"; };
-		B1A86BAC188AAE9A00469398 /* glscissor.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glscissor.c; sourceTree = "<group>"; };
-		B1A86BAE188C87DB00469398 /* glarraybuffer.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glarraybuffer.c; sourceTree = "<group>"; };
+		B1A86BAE188C87DB00469398 /* glarraybuffer.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glarraybuffer.cc; sourceTree = "<group>"; };
 		B1EFDABC16E6E77A00CB436E /* m_pd.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = m_pd.h; sourceTree = "<group>"; };
 		B1EFDABE16E6E7A300CB436E /* glance.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glance.c; sourceTree = "<group>"; };
-		B1EFDADD16E815B400CB436E /* window.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = window.c; sourceTree = "<group>"; };
-		B1EFDADF16E83BFC00CB436E /* glshader.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = glshader.c; sourceTree = "<group>"; };
+		B1EFDADD16E815B400CB436E /* window.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = window.cc; sourceTree = "<group>"; };
+		B1EFDADF16E83BFC00CB436E /* glprogram.cc */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = glprogram.cc; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,26 +123,25 @@
 		B1EFDA4516E6C63000CB436E = {
 			isa = PBXGroup;
 			children = (
+				B15C70A21982F3690019358A /* pdcpputils.cc */,
+				B15C70A31982F3690019358A /* pdcpputils.hh */,
+				B134C9BE196EB3B40033B214 /* glsketch.cc */,
 				B12831FE195A6CCC00646706 /* glerror.c */,
 				B1EFDABE16E6E7A300CB436E /* glance.c */,
 				B15C055616EE8CA000DD7B28 /* glance.h */,
 				B1A86B97187DBAA000469398 /* gltest.c */,
 				B1283200195A93B300646706 /* glinfo.c */,
-				B1EFDADD16E815B400CB436E /* window.c */,
+				B1EFDADD16E815B400CB436E /* window.cc */,
+				B134C9C1197EE5770033B214 /* window.hh */,
 				B15C055316EDC35D00DD7B28 /* pdutils.h */,
 				B15C055416EDC3D900DD7B28 /* pdutils.c */,
-				B124B8A216F5158B00B15E26 /* gldraw.c */,
-				B12BA1A916F8F515007BF78F /* glclear.c */,
-				B1EFDADF16E83BFC00CB436E /* glshader.c */,
-				B12BA18C16F7D39C007BF78F /* gltexture.c */,
+				B1EFDADF16E83BFC00CB436E /* glprogram.cc */,
+				B12BA18C16F7D39C007BF78F /* gltexture.cc */,
 				B124B8A616F536F500B15E26 /* gluniform.c */,
-				B12BA18A16F7AF90007BF78F /* gluniformmatrix.c */,
+				B12BA18A16F7AF90007BF78F /* gluniformmatrix.cc */,
 				B124B8A416F536E900B15E26 /* glvertexarray.c */,
 				B1283202195B0E1100646706 /* glvertexattrib.c */,
-				B1A86BAE188C87DB00469398 /* glarraybuffer.c */,
-				B12BA18216F6BEE4007BF78F /* glviewport.c */,
-				B1A86BAC188AAE9A00469398 /* glscissor.c */,
-				B12BA1B516FAC2C4007BF78F /* glenable.c */,
+				B1A86BAE188C87DB00469398 /* glarraybuffer.cc */,
 				B12BA19416F80D9D007BF78F /* Libraries */,
 				B1EFDA4F16E6C63100CB436E /* Products */,
 				B15CE3F716EA236300DD7B28 /* utarray.h */,
@@ -175,6 +171,7 @@
 				B15CE3FB16EA236300DD7B28 /* utarray.h in Headers */,
 				B15CE3FC16EA236300DD7B28 /* uthash.h in Headers */,
 				B15CE3FD16EA236300DD7B28 /* utlist.h in Headers */,
+				B15C70A51982F3690019358A /* pdcpputils.hh in Headers */,
 				B15CE3FE16EA236300DD7B28 /* utstring.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -231,22 +228,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				149A3E4D16E7EA5E008911FD /* glance.c in Sources */,
-				B1A86BAD188AAE9A00469398 /* glscissor.c in Sources */,
-				B1EFDADE16E815B400CB436E /* window.c in Sources */,
-				B1EFDAE016E83BFC00CB436E /* glshader.c in Sources */,
+				B134C9BF196EB3B40033B214 /* glsketch.cc in Sources */,
+				B1EFDADE16E815B400CB436E /* window.cc in Sources */,
+				B1EFDAE016E83BFC00CB436E /* glprogram.cc in Sources */,
 				B15C055516EDC3D900DD7B28 /* pdutils.c in Sources */,
-				B124B8A316F5158B00B15E26 /* gldraw.c in Sources */,
 				B124B8A516F536E900B15E26 /* glvertexarray.c in Sources */,
 				B12831FF195A6CCC00646706 /* glerror.c in Sources */,
 				B1283203195B0E1100646706 /* glvertexattrib.c in Sources */,
 				B124B8A716F536F500B15E26 /* gluniform.c in Sources */,
+				B15C70A41982F3690019358A /* pdcpputils.cc in Sources */,
 				B1283201195A93B300646706 /* glinfo.c in Sources */,
-				B12BA18316F6BEE5007BF78F /* glviewport.c in Sources */,
-				B12BA18B16F7AF90007BF78F /* gluniformmatrix.c in Sources */,
-				B12BA18D16F7D39C007BF78F /* gltexture.c in Sources */,
-				B12BA1AA16F8F515007BF78F /* glclear.c in Sources */,
-				B12BA1B616FAC2C5007BF78F /* glenable.c in Sources */,
-				B1A86BAF188C87DB00469398 /* glarraybuffer.c in Sources */,
+				B12BA18B16F7AF90007BF78F /* gluniformmatrix.cc in Sources */,
+				B12BA18D16F7D39C007BF78F /* gltexture.cc in Sources */,
+				B1A86BAF188C87DB00469398 /* glarraybuffer.cc in Sources */,
 				B1A86B98187DBAA000469398 /* gltest.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -261,19 +255,20 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				EXECUTABLE_EXTENSION = pd_darwin;
 				EXECUTABLE_PREFIX = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				LD_NO_PIE = YES;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/freeimage/3.15.4/lib,
 					/usr/local/Cellar/glfw3/3.0.3/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-undefined",
 					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = "";
+				SDKROOT = macosx;
 				SYMROOT = "../pd objects";
 			};
 			name = Debug;
@@ -286,19 +281,20 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				EXECUTABLE_EXTENSION = pd_darwin;
 				EXECUTABLE_PREFIX = "";
+				GCC_C_LANGUAGE_STANDARD = gnu11;
 				LD_NO_PIE = YES;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					/usr/local/Cellar/freeimage/3.15.4/lib,
 					/usr/local/Cellar/glfw3/3.0.3/lib,
 				);
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				OTHER_LDFLAGS = (
 					"-undefined",
 					dynamic_lookup,
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = "";
+				SDKROOT = macosx;
 				SYMROOT = "../pd objects";
 			};
 			name = Release;
@@ -336,7 +332,7 @@
 					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = "";
 				SYMROOT = "$(PROJECT_DIR)/Build/Products";
@@ -368,7 +364,7 @@
 					/usr/local/include,
 				);
 				LIBRARY_SEARCH_PATHS = /usr/local/lib;
-				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				MACOSX_DEPLOYMENT_TARGET = 10.7;
 				SDKROOT = "";
 				SYMROOT = "$(PROJECT_DIR)/Build/Products";
 			};

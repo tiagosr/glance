@@ -516,7 +516,7 @@ void gl_uniform_matrix_setup(void)
     class_addmethod(gl_uniform_mtx2f_class, (t_method)gl_uniform_mtx2f_setname,
                     gensym("name"), A_SYMBOL, 0);
     class_addmethod(gl_uniform_mtx2f_class, (t_method)gl_uniform_mtx2f_identity,
-                    gensym("identity"), 0);
+                    gensym("identity"), A_NULL, 0);
     class_addmethod(gl_uniform_mtx2f_class, (t_method)gl_uniform_mtx2f_render,
                     render, A_GIMME, 0);
     
@@ -530,7 +530,7 @@ void gl_uniform_matrix_setup(void)
     class_addmethod(gl_uniform_mtx3f_class, (t_method)gl_uniform_mtx3f_setname,
                     gensym("name"), A_SYMBOL, 0);
     class_addmethod(gl_uniform_mtx3f_class, (t_method)gl_uniform_mtx3f_identity,
-                    gensym("identity"), 0);
+                    gensym("identity"), A_NULL, 0);
     class_addmethod(gl_uniform_mtx3f_class, (t_method)gl_uniform_mtx3f_render,
                     render, A_GIMME, 0);
     
@@ -544,7 +544,7 @@ void gl_uniform_matrix_setup(void)
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_setname,
                     gensym("name"), A_SYMBOL, 0);
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_identity,
-                    gensym("identity"), 0);
+                    gensym("identity"), A_NULL, 0);
 
     class_addmethod(gl_uniform_mtx4f_class, (t_method)gl_uniform_mtx4f_translate,
                     gensym("translate"), A_FLOAT, A_FLOAT, A_FLOAT, 0);

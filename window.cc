@@ -6,15 +6,8 @@
 //  Copyright (c) 2013 Tiago Rezende. All rights reserved.
 //
 
-#include "m_pd.h"
-#include "glance.h"
-#include <stdio.h>
-#include <stdbool.h>
-#include "utstring.h"
-#include "uthash.h"
-#define GLFW_INCLUDE_GLCOREARB
-#include <GLFW/glfw3.h>
-
+#include "window.hh"
+#include <stdlib.h>
 
 static t_class *gl_window_class;
 static t_class *gl_win_class;
@@ -57,47 +50,24 @@ static void setup_symbols() {
     windowposition = gensym("window-position");
 }
 
-typedef struct _glwindow {
-    t_object x_obj;
-    t_symbol *name;
-#if defined USE_SDL
-    SDL_Window *window;
-    SDL_GLContext *glcontext;
-#elif defined USE_GLFW
-    GLFWwindow *window;
-    double old_cursor_x, old_cursor_y;
-#endif
-    t_clock *dispatch_clock;
-    t_clock *event_clock;
-    float frame_delta_time;
-    float event_delta_time;
-    bool keep_rendering;
-    bool reset;
-    struct _gl_renderhead_obj *rh_head;
-    struct _gl_win_obj *win_head;
-    int refcount;
-    UT_hash_handle hh;
-} glwindow;
+std::map<t_symbol *, glwindow *> glwindow::windows;
 
-static glwindow *windows = NULL;
-static t_symbol *default_window;
+t_symbol *default_window;
 
-typedef struct _gl_win_obj {
+struct t_gl_win_obj {
     t_object x_obj;
-    char *title;
+    std::string title;
     int width, height;
     bool fullscreen;
-    struct _gl_win_obj *next;
     glwindow *window;
     t_outlet *event_out;
-} t_gl_win_obj;
+};
 
-typedef struct _gl_renderhead_obj {
+struct t_gl_renderhead_obj {
     t_object x_obj;
     glwindow *window;
-    struct _gl_renderhead_obj *next;
     t_outlet *render_out;
-} t_gl_renderhead_obj;
+};
 
 
 static void gl_win_destroy(t_gl_win_obj *obj);
@@ -106,9 +76,10 @@ static void gl_win_destroy(t_gl_win_obj *obj);
  * sends stuff over to a [gl.win]'s outlet
  */
 static void gl_win_send_list_to_outlets(t_gl_win_obj *obj, t_symbol *s, int argc, t_atom *argv) {
-    while (obj != NULL) {
-        outlet_list(obj->event_out, s, argc, argv);
-        obj = obj->next;
+    win_obj_list *list = &obj->window->cpp->win_objs;
+    for (win_obj_list::const_iterator ci = list->begin(); ci!=list->end(); ci++) {
+        outlet_list((*ci)->event_out, s, argc, argv);
+        
     }
 }
 
@@ -131,14 +102,16 @@ static void gl_win_event_tick(glwindow *win) {
  */
 static void gl_win_window_tick(glwindow *win) {
     glfwMakeContextCurrent(win->window);
-    t_gl_renderhead_obj *head = win->rh_head;
-    while (head) {
+    
+    for(render_head_list::const_iterator ci = win->cpp->renderheads.begin();
+        ci != win->cpp->renderheads.end();
+        ci++) {
         if (!win->reset) {
-            outlet_anything(head->render_out, reset, 0, 0);
+            outlet_anything((*ci)->render_out, reset, 0, 0);
         }
-        outlet_anything(head->render_out, render, 0, 0);
-        head = head->next;
+        outlet_anything((*ci)->render_out, render, 0, 0);
     }
+    
     glfwSwapBuffers(win->window);
     // schedule next call to this function
     if (win->keep_rendering) {
@@ -148,11 +121,11 @@ static void gl_win_window_tick(glwindow *win) {
 }
 
 static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*3);
     sym = &s_list;
     SETSYMBOL(arg_list, (action==GLFW_PRESS)?keydown:((action==GLFW_REPEAT)?keyrepeat:keyup));
     SETFLOAT(arg_list+1, key);
@@ -163,11 +136,11 @@ static void glfw_key_callback(GLFWwindow *window, int key, int scancode, int act
 }
 
 static void glfw_mouse_pos_callback(GLFWwindow *window, double x, double y) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*5);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*5);
     sym = &s_list;
     SETSYMBOL(arg_list, mousemotion);
     SETFLOAT(arg_list+1, x);
@@ -182,11 +155,11 @@ static void glfw_mouse_pos_callback(GLFWwindow *window, double x, double y) {
 }
 
 static void glfw_mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*4);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*4);
     sym = &s_list;
     SETSYMBOL(arg_list, (action==GLFW_PRESS)?mousebuttondown:mousebuttonup);
     SETFLOAT(arg_list+1, winobj->window->old_cursor_x);
@@ -198,11 +171,11 @@ static void glfw_mouse_button_callback(GLFWwindow *window, int button, int actio
 }
 
 static void glfw_mouse_enter_callback(GLFWwindow *window, int entered) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*2);
     sym = &s_list;
     SETSYMBOL(arg_list, (entered==GL_TRUE)?mouseentered:mouseexited);
     SETFLOAT(arg_list+1, entered);
@@ -212,11 +185,11 @@ static void glfw_mouse_enter_callback(GLFWwindow *window, int entered) {
 }
 
 static void glfw_unicode_char_callback(GLFWwindow *window, unsigned int codepoint) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*2);
     sym = &s_list;
     SETSYMBOL(arg_list, unicodechar);
     SETFLOAT(arg_list+1, codepoint);
@@ -226,11 +199,11 @@ static void glfw_unicode_char_callback(GLFWwindow *window, unsigned int codepoin
 }
 
 static void glfw_mouse_scroll_callback(GLFWwindow *window, double x, double y) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*3);
     sym = &s_list;
     SETSYMBOL(arg_list, mousewheel);
     SETFLOAT(arg_list+1, x);
@@ -241,11 +214,11 @@ static void glfw_mouse_scroll_callback(GLFWwindow *window, double x, double y) {
 }
 
 static void glfw_window_pos_callback(GLFWwindow *window, int w, int h) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*3);
     sym = &s_list;
     SETSYMBOL(arg_list, windowposition);
     SETFLOAT(arg_list+1, w);
@@ -256,11 +229,11 @@ static void glfw_window_pos_callback(GLFWwindow *window, int w, int h) {
 }
 
 static void glfw_window_resize_callback(GLFWwindow *window, int w, int h) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*3);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*3);
     sym = &s_list;
     SETSYMBOL(arg_list, windowsize);
     SETFLOAT(arg_list+1, w);
@@ -271,11 +244,11 @@ static void glfw_window_resize_callback(GLFWwindow *window, int w, int h) {
 }
 
 static void glfw_window_close_callback(GLFWwindow *window) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom));
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom));
     sym = &s_list;
     SETSYMBOL(arg_list, windowclose);
     arg_count = 1;
@@ -284,11 +257,11 @@ static void glfw_window_close_callback(GLFWwindow *window) {
 }
 
 static void glfw_window_focus_callback(GLFWwindow *window, int focus) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*2);
     sym = &s_list;
     SETSYMBOL(arg_list, (focus==GL_TRUE)?windowfocus:windowdefocus);
     SETFLOAT(arg_list+1, focus);
@@ -298,11 +271,11 @@ static void glfw_window_focus_callback(GLFWwindow *window, int focus) {
 }
 
 static void glfw_window_iconify_callback(GLFWwindow *window, int focus) {
-    t_gl_win_obj *winobj = glfwGetWindowUserPointer(window);
+    t_gl_win_obj *winobj = (t_gl_win_obj *)glfwGetWindowUserPointer(window);
     t_atom *arg_list;
     int bytes_count, arg_count;
     t_symbol *sym;
-    arg_list = getbytes(bytes_count = sizeof(t_atom)*2);
+    arg_list = (t_atom *)getbytes(bytes_count = sizeof(t_atom)*2);
     sym = &s_list;
     SETSYMBOL(arg_list, (focus==GL_TRUE)?windowiconify:windowrestore);
     SETFLOAT(arg_list+1, focus);
@@ -328,7 +301,7 @@ static glwindow *gl_win_new_window(t_symbol *name) {
     newwin->event_clock = clock_new(&newwin->x_obj, (t_method)gl_win_event_tick);
     newwin->frame_delta_time = 1000.0/30.0;
     newwin->event_delta_time = 1000.0/120.0;
-    HASH_ADD_PTR(windows, name, newwin);
+    glwindow::windows[name] = newwin;
     return newwin;
 }
 
@@ -339,13 +312,12 @@ static glwindow *gl_win_new_window(t_symbol *name) {
  * @param name window name
  * @return the corresponding window object
  */
-static glwindow *gl_find_window(t_symbol *name) {
-    glwindow *window = NULL;
-    HASH_FIND_PTR(windows, &name, window);
-    if (!window) {
-        window = gl_win_new_window(name);
+glwindow *gl_find_window(t_symbol *name) {
+    if (glwindow::windows.find(name)==glwindow::windows.end()) {
+        return gl_win_new_window(name);
+    } else {
+        return glwindow::windows[name];
     }
-    return window;
 }
 
 static void * gl_win_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {
@@ -359,35 +331,21 @@ static void * gl_win_new(t_pd *dummy, t_symbol *s, int argc, t_atom *argv) {
     obj->window->refcount++;
     obj->width = 640;
     obj->height = 480;
-    obj->title = NULL;
-    obj->next = obj->window->win_head;
-    obj->window->win_head = obj;
+    obj->title = "glance window";
+    obj->window->cpp->win_objs.push_back(obj);
     obj->event_out = outlet_new(&obj->x_obj, &s_list);
     return (void *) obj;
 }
 
 static void gl_win_obj_destroy(t_gl_win_obj *obj) {
     // remove this object from the queue
-    if (obj->window->win_head == obj) {
-        obj->window->win_head = obj->window->win_head->next;
-    } else {
-        t_gl_win_obj *win_head = obj->window->win_head;
-        while (win_head) {
-            if (win_head->next == obj) {
-                win_head->next = obj->next;
-            }
-            win_head = win_head->next;
-        }
-    }
+    obj->window->cpp->win_objs.remove(obj);
     if (--obj->window->refcount<=0) {
         if (obj->window->window) {
             gl_win_destroy(obj);
         }
-        HASH_DEL(windows, obj->window);
+        glwindow::windows.erase(obj->window->name);
         free(obj->window);
-    }
-    if (obj->title) {
-        free(obj->title);
     }
     outlet_free(obj->event_out);
 }
@@ -402,11 +360,8 @@ static void gl_win_title(t_gl_win_obj *obj, t_symbol *sym, int argc, t_atom *arg
                  obj->window->name->s_name);
         }
     }
-    if (obj->title) {
-        free(obj->title);
-    }
     obj->title = list_to_string(argc, argv);
-    glfwSetWindowTitle(obj->window->window, obj->title);
+    glfwSetWindowTitle(obj->window->window, obj->title.c_str());
 }
 
 static void gl_win_post_info(t_gl_win_obj *obj) {
@@ -429,14 +384,18 @@ static void gl_win_dimen(t_gl_win_obj *obj, float width, float height) {
     obj->height = height;
 }
 
+static std::list<GLFWwindow *> windows;
 static void gl_win_create(t_gl_win_obj *obj) {
     if (obj->window->window) {
         post("window already created");
         return;
     }
+    
     obj->window->window = glfwCreateWindow(obj->width, obj->height,
-                                           (obj->title)?obj->title:"Glance window",
-                                           NULL, NULL);
+                                           obj->title.c_str(),
+                                           NULL, windows.size()?windows.front():NULL);
+    windows.push_back(obj->window->window);
+    
     glfwSetWindowUserPointer(obj->window->window, obj);
     glfwSetKeyCallback(obj->window->window, glfw_key_callback);
     glfwSetCursorPosCallback(obj->window->window, glfw_mouse_pos_callback);
@@ -474,6 +433,7 @@ static void gl_win_window_destroy(glwindow *obj) {
         post("no window to destroy");
         return;
     }
+    windows.remove(obj->window);
     glfwDestroyWindow(obj->window);
     obj->window = NULL;
 }
@@ -493,29 +453,18 @@ static void *gl_head_new(t_pd *dummy, t_symbol *sym, int argc, t_atom *argv) {
     }
     obj->window = gl_find_window(name);
     obj->window->refcount++;
-    obj->next = obj->window->rh_head;
-    obj->window->rh_head = obj;
+    obj->window->cpp->renderheads.push_back(obj);
     obj->render_out = outlet_new(&obj->x_obj, &s_list);
     return (void *)obj;
 }
 
 static void gl_head_destroy(t_gl_renderhead_obj *obj) {
     // remove this object from the queue
-    if (obj->window->rh_head == obj) {
-        obj->window->rh_head = obj->window->rh_head->next;
-    } else {
-        t_gl_renderhead_obj *rh_head = obj->window->rh_head;
-        while (rh_head) {
-            if (rh_head->next == obj) {
-                rh_head->next = obj->next;
-            }
-            rh_head = rh_head->next;
-        }
-    }
+    obj->window->cpp->renderheads.remove(obj);
     // remove window if no one is using it anymore
     if (--obj->window->refcount<=0) {
         gl_win_window_destroy(obj->window);
-        HASH_DEL(windows, obj->window);
+        glwindow::windows.erase(obj->window->name);
         free(obj->window);
     }
     outlet_free(obj->render_out);
@@ -540,13 +489,13 @@ void gl_win_setup(void) {
     class_addmethod(gl_win_class, (t_method)gl_win_title,
                     gensym("title"), A_GIMME, 0);
     class_addmethod(gl_win_class, (t_method)gl_win_create,
-                    gensym("create"), 0);
+                    gensym("create"), A_NULL, 0);
     class_addmethod(gl_win_class, (t_method)gl_win_dimen,
                     gensym("dimen"), A_FLOAT, A_FLOAT, 0);
     class_addmethod(gl_win_class, (t_method)gl_win_destroy,
-                    gensym("destroy"), 0);
+                    gensym("destroy"), A_NULL, 0);
     class_addmethod(gl_win_class, (t_method)gl_win_post_info,
-                    gensym("post-info"), 0);
+                    gensym("post-info"), A_NULL, 0);
     class_addmethod(gl_win_class, (t_method)gl_win_fullscreen,
                     gensym("fullscreen"), A_FLOAT, 0);
     class_addfloat(gl_win_class, (t_method)gl_win_render);
